@@ -1,2 +1,3 @@
-# real-estate-for-countries-with-nature-and-views
-Project real-estate-for-countries-with-nature-and-views generated.
+app generated from cofounder/boilerplate
+
+instructions here on how to start api and frontend , whether in parallel or separately

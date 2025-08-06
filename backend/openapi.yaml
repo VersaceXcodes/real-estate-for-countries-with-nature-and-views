@@ -1,0 +1,2573 @@
+openapi: 3.0.0
+info:
+  title: NatureEstate API
+  description: Real Estate Platform API for Scenic Properties
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Development server
+security:
+  - BearerAuth: []
+paths:
+  /auth/register:
+    post:
+      summary: Register new user account
+      operationId: registerUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User registration successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Registration failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/login:
+    post:
+      summary: User login authentication
+      operationId: loginUser
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/logout:
+    post:
+      summary: User logout
+      operationId: logoutUser
+      responses:
+        "200":
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /auth/forgot-password:
+    post:
+      summary: Request password reset
+      operationId: forgotPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForgotPasswordRequest"
+      responses:
+        "200":
+          description: Password reset email sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /auth/reset-password:
+    post:
+      summary: Reset password with token
+      operationId: resetPassword
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordRequest"
+      responses:
+        "200":
+          description: Password reset successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /auth/verify-email:
+    post:
+      summary: Verify email address
+      operationId: verifyEmail
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyEmailRequest"
+      responses:
+        "200":
+          description: Email verification successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /auth/refresh-token:
+    post:
+      summary: Refresh authentication token
+      operationId: refreshToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshTokenRequest"
+      responses:
+        "200":
+          description: Token refresh successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /users/me:
+    get:
+      summary: Get current user profile
+      operationId: getCurrentUser
+      responses:
+        "200":
+          description: Current user profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    put:
+      summary: Update current user profile
+      operationId: updateCurrentUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRequest"
+      responses:
+        "200":
+          description: User profile updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    delete:
+      summary: Delete current user account
+      operationId: deleteCurrentUser
+      responses:
+        "200":
+          description: User account deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /users/{user_id}:
+    get:
+      summary: Get public user profile
+      operationId: getUserProfile
+      security: []
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Public user profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicUserProfile"
+  /properties:
+    get:
+      summary: Search properties with filters
+      operationId: searchProperties
+      security: []
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+        - name: country
+          in: query
+          schema:
+            type: string
+        - name: region
+          in: query
+          schema:
+            type: string
+        - name: city
+          in: query
+          schema:
+            type: string
+        - name: property_type
+          in: query
+          schema:
+            type: string
+            enum:
+              - villa
+              - cabin
+              - condominium
+              - farm
+              - land
+              - mansion
+              - house
+              - apartment
+              - commercial
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - active
+              - inactive
+              - sold
+              - pending
+              - withdrawn
+            default: active
+        - name: price_min
+          in: query
+          schema:
+            type: number
+        - name: price_max
+          in: query
+          schema:
+            type: number
+        - name: bedrooms_min
+          in: query
+          schema:
+            type: integer
+        - name: bathrooms_min
+          in: query
+          schema:
+            type: integer
+        - name: square_footage_min
+          in: query
+          schema:
+            type: number
+        - name: square_footage_max
+          in: query
+          schema:
+            type: number
+        - name: land_size_min
+          in: query
+          schema:
+            type: number
+        - name: land_size_max
+          in: query
+          schema:
+            type: number
+        - name: year_built_min
+          in: query
+          schema:
+            type: integer
+        - name: year_built_max
+          in: query
+          schema:
+            type: integer
+        - name: natural_features
+          in: query
+          schema:
+            type: string
+        - name: outdoor_amenities
+          in: query
+          schema:
+            type: string
+        - name: location_text
+          in: query
+          schema:
+            type: string
+        - name: is_featured
+          in: query
+          schema:
+            type: boolean
+        - name: sort_by
+          in: query
+          schema:
+            type: string
+            enum:
+              - price
+              - created_at
+              - view_count
+              - title
+              - square_footage
+            default: created_at
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+        - name: view_type
+          in: query
+          schema:
+            type: string
+            enum:
+              - grid
+              - list
+              - map
+      responses:
+        "200":
+          description: Property search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertySearchResponse"
+    post:
+      summary: Create new property listing
+      operationId: createProperty
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePropertyRequest"
+      responses:
+        "201":
+          description: Property created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+  /properties/{property_id}:
+    get:
+      summary: Get property details
+      operationId: getProperty
+      security: []
+      parameters:
+        - name: property_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Property details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyWithDetails"
+    put:
+      summary: Update property listing
+      operationId: updateProperty
+      parameters:
+        - name: property_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePropertyRequest"
+      responses:
+        "200":
+          description: Property updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+    patch:
+      summary: Partially update property listing
+      operationId: patchProperty
+      parameters:
+        - name: property_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePropertyRequest"
+      responses:
+        "200":
+          description: Property updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Property"
+    delete:
+      summary: Delete property listing
+      operationId: deleteProperty
+      parameters:
+        - name: property_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Property deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /properties/{property_id}/view:
+    post:
+      summary: Track property view
+      operationId: trackPropertyView
+      security: []
+      parameters:
+        - name: property_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePropertyViewRequest"
+      responses:
+        "201":
+          description: Property view tracked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /properties/{property_id}/photos:
+    get:
+      summary: Get property photos
+      operationId: getPropertyPhotos
+      security: []
+      parameters:
+        - name: property_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Property photos list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PropertyPhoto"
+    post:
+      summary: Add property photo
+      operationId: addPropertyPhoto
+      parameters:
+        - name: property_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePropertyPhotoRequest"
+      responses:
+        "201":
+          description: Photo added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyPhoto"
+  /properties/{property_id}/photos/{photo_id}:
+    put:
+      summary: Update property photo
+      operationId: updatePropertyPhoto
+      parameters:
+        - name: property_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: photo_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePropertyPhotoRequest"
+      responses:
+        "200":
+          description: Photo updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyPhoto"
+    delete:
+      summary: Delete property photo
+      operationId: deletePropertyPhoto
+      parameters:
+        - name: property_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: photo_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Photo deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /properties/{property_id}/inquiries:
+    get:
+      summary: Get property inquiries
+      operationId: getPropertyInquiries
+      parameters:
+        - name: property_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - unread
+              - read
+              - responded
+              - archived
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Property inquiries list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InquiryListResponse"
+    post:
+      summary: Create property inquiry
+      operationId: createPropertyInquiry
+      security: []
+      parameters:
+        - name: property_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePropertyInquiryRequest"
+      responses:
+        "201":
+          description: Inquiry created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyInquiry"
+  /inquiries:
+    get:
+      summary: Get user inquiries
+      operationId: getUserInquiries
+      parameters:
+        - name: recipient_user_id
+          in: query
+          schema:
+            type: string
+        - name: sender_user_id
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - unread
+              - read
+              - responded
+              - archived
+        - name: priority
+          in: query
+          schema:
+            type: string
+            enum:
+              - low
+              - normal
+              - high
+        - name: is_interested_in_viewing
+          in: query
+          schema:
+            type: boolean
+        - name: date_from
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: date_to
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: sort_by
+          in: query
+          schema:
+            type: string
+            enum:
+              - created_at
+              - priority
+              - status
+            default: created_at
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: User inquiries list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InquiryListResponse"
+  /inquiries/{inquiry_id}:
+    get:
+      summary: Get inquiry details
+      operationId: getInquiry
+      parameters:
+        - name: inquiry_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Inquiry details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyInquiry"
+    put:
+      summary: Update inquiry
+      operationId: updateInquiry
+      parameters:
+        - name: inquiry_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePropertyInquiryRequest"
+      responses:
+        "200":
+          description: Inquiry updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PropertyInquiry"
+  /inquiries/{inquiry_id}/responses:
+    get:
+      summary: Get inquiry responses
+      operationId: getInquiryResponses
+      parameters:
+        - name: inquiry_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Inquiry responses list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InquiryResponse"
+    post:
+      summary: Create inquiry response
+      operationId: createInquiryResponse
+      parameters:
+        - name: inquiry_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateInquiryResponseRequest"
+      responses:
+        "201":
+          description: Response created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InquiryResponse"
+  /saved-properties:
+    get:
+      summary: Get user saved properties
+      operationId: getSavedProperties
+      parameters:
+        - name: sort_by
+          in: query
+          schema:
+            type: string
+            enum:
+              - date_saved
+              - price_low_high
+              - location
+        - name: filter_country
+          in: query
+          schema:
+            type: string
+        - name: view_type
+          in: query
+          schema:
+            type: string
+            enum:
+              - grid
+              - list
+              - comparison
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Saved properties list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedPropertiesResponse"
+    post:
+      summary: Save property to favorites
+      operationId: saveProperty
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSavedPropertyRequest"
+      responses:
+        "201":
+          description: Property saved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedProperty"
+  /saved-properties/{saved_property_id}:
+    put:
+      summary: Update saved property
+      operationId: updateSavedProperty
+      parameters:
+        - name: saved_property_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSavedPropertyRequest"
+      responses:
+        "200":
+          description: Saved property updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedProperty"
+    delete:
+      summary: Remove property from favorites
+      operationId: removeSavedProperty
+      parameters:
+        - name: saved_property_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Property removed from favorites
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /saved-searches:
+    get:
+      summary: Get user saved searches
+      operationId: getSavedSearches
+      responses:
+        "200":
+          description: Saved searches list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SavedSearch"
+    post:
+      summary: Create saved search
+      operationId: createSavedSearch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSavedSearchRequest"
+      responses:
+        "201":
+          description: Saved search created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedSearch"
+  /saved-searches/{saved_search_id}:
+    put:
+      summary: Update saved search
+      operationId: updateSavedSearch
+      parameters:
+        - name: saved_search_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSavedSearchRequest"
+      responses:
+        "200":
+          description: Saved search updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SavedSearch"
+    delete:
+      summary: Delete saved search
+      operationId: deleteSavedSearch
+      parameters:
+        - name: saved_search_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Saved search deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /notifications:
+    get:
+      summary: Get user notifications
+      operationId: getNotifications
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum:
+              - inquiry
+              - saved_search
+              - property_update
+              - system
+              - marketing
+        - name: is_read
+          in: query
+          schema:
+            type: boolean
+        - name: priority
+          in: query
+          schema:
+            type: string
+            enum:
+              - low
+              - normal
+              - high
+        - name: date_from
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: date_to
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: sort_by
+          in: query
+          schema:
+            type: string
+            enum:
+              - created_at
+              - priority
+              - type
+            default: created_at
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        "200":
+          description: Notifications list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationListResponse"
+  /notifications/{notification_id}/read:
+    put:
+      summary: Mark notification as read
+      operationId: markNotificationRead
+      parameters:
+        - name: notification_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Notification marked as read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /notifications/mark-all-read:
+    put:
+      summary: Mark all notifications as read
+      operationId: markAllNotificationsRead
+      responses:
+        "200":
+          description: All notifications marked as read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+  /dashboard/stats:
+    get:
+      summary: Get dashboard statistics
+      operationId: getDashboardStats
+      responses:
+        "200":
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+  /properties/{property_id}/analytics:
+    get:
+      summary: Get property analytics
+      operationId: getPropertyAnalytics
+      parameters:
+        - name: property_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date_from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: date_to
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 30
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Property analytics data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PropertyAnalytics"
+  /search-history:
+    get:
+      summary: Get user search history
+      operationId: getSearchHistory
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Search history list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SearchHistory"
+    post:
+      summary: Record search in history
+      operationId: recordSearchHistory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSearchHistoryRequest"
+      responses:
+        "201":
+          description: Search recorded in history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchHistory"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+        - name
+        - user_type
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        password:
+          type: string
+          minLength: 8
+          maxLength: 128
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        phone:
+          type: string
+          maxLength: 50
+          nullable: true
+        user_type:
+          type: string
+          enum:
+            - buyer
+            - seller
+            - agent
+            - admin
+        profile_photo_url:
+          type: string
+          format: uri
+          nullable: true
+        notification_preferences:
+          type: string
+          nullable: true
+        countries_of_interest:
+          type: string
+          nullable: true
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+        refresh_token:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+    ForgotPasswordRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+    ResetPasswordRequest:
+      type: object
+      required:
+        - token
+        - password
+      properties:
+        token:
+          type: string
+        password:
+          type: string
+          minLength: 8
+    VerifyEmailRequest:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+    RefreshTokenRequest:
+      type: object
+      required:
+        - refresh_token
+      properties:
+        refresh_token:
+          type: string
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        user_type:
+          type: string
+          enum:
+            - buyer
+            - seller
+            - agent
+            - admin
+        profile_photo_url:
+          type: string
+          nullable: true
+        is_verified:
+          type: boolean
+        email_verified:
+          type: boolean
+        notification_preferences:
+          type: string
+          nullable: true
+        countries_of_interest:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        last_login_at:
+          type: string
+          format: date-time
+          nullable: true
+    PublicUserProfile:
+      type: object
+      properties:
+        user_id:
+          type: string
+        name:
+          type: string
+        user_type:
+          type: string
+          enum:
+            - buyer
+            - seller
+            - agent
+            - admin
+        profile_photo_url:
+          type: string
+          nullable: true
+        is_verified:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    UpdateUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        phone:
+          type: string
+          maxLength: 50
+          nullable: true
+        user_type:
+          type: string
+          enum:
+            - buyer
+            - seller
+            - agent
+            - admin
+        profile_photo_url:
+          type: string
+          format: uri
+          nullable: true
+        notification_preferences:
+          type: string
+          nullable: true
+        countries_of_interest:
+          type: string
+          nullable: true
+    Property:
+      type: object
+      properties:
+        property_id:
+          type: string
+        user_id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        property_type:
+          type: string
+          enum:
+            - villa
+            - cabin
+            - condominium
+            - farm
+            - land
+            - mansion
+            - house
+            - apartment
+            - commercial
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+            - sold
+            - pending
+            - withdrawn
+        price:
+          type: number
+        currency:
+          type: string
+        country:
+          type: string
+        region:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        latitude:
+          type: number
+          nullable: true
+        longitude:
+          type: number
+          nullable: true
+        square_footage:
+          type: number
+          nullable: true
+        land_size:
+          type: number
+          nullable: true
+        land_size_unit:
+          type: string
+          enum:
+            - acres
+            - hectares
+            - sqft
+            - sqm
+          nullable: true
+        bedrooms:
+          type: integer
+          nullable: true
+        bathrooms:
+          type: integer
+          nullable: true
+        year_built:
+          type: integer
+          nullable: true
+        natural_features:
+          type: string
+          nullable: true
+        outdoor_amenities:
+          type: string
+          nullable: true
+        indoor_amenities:
+          type: string
+          nullable: true
+        view_types:
+          type: string
+          nullable: true
+        nearby_attractions:
+          type: string
+          nullable: true
+        distance_to_landmarks:
+          type: string
+          nullable: true
+        environmental_features:
+          type: string
+          nullable: true
+        outdoor_activities:
+          type: string
+          nullable: true
+        property_condition:
+          type: string
+          enum:
+            - excellent
+            - very good
+            - good
+            - fair
+            - needs work
+            - pristine
+            - restored
+          nullable: true
+        special_features:
+          type: string
+          nullable: true
+        listing_duration_days:
+          type: integer
+        is_featured:
+          type: boolean
+        featured_until:
+          type: string
+          format: date-time
+          nullable: true
+        view_count:
+          type: integer
+        inquiry_count:
+          type: integer
+        favorite_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+    PropertyWithDetails:
+      allOf:
+        - $ref: "#/components/schemas/Property"
+        - type: object
+          properties:
+            owner:
+              $ref: "#/components/schemas/PublicUserProfile"
+            photos:
+              type: array
+              items:
+                $ref: "#/components/schemas/PropertyPhoto"
+    CreatePropertyRequest:
+      type: object
+      required:
+        - title
+        - property_type
+        - price
+        - country
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 500
+        description:
+          type: string
+          maxLength: 5000
+          nullable: true
+        property_type:
+          type: string
+          enum:
+            - villa
+            - cabin
+            - condominium
+            - farm
+            - land
+            - mansion
+            - house
+            - apartment
+            - commercial
+        price:
+          type: number
+          minimum: 0
+        currency:
+          type: string
+          default: USD
+        country:
+          type: string
+          minLength: 1
+          maxLength: 100
+        region:
+          type: string
+          maxLength: 100
+          nullable: true
+        city:
+          type: string
+          maxLength: 100
+          nullable: true
+        address:
+          type: string
+          maxLength: 500
+          nullable: true
+        latitude:
+          type: number
+          minimum: -90
+          maximum: 90
+          nullable: true
+        longitude:
+          type: number
+          minimum: -180
+          maximum: 180
+          nullable: true
+        square_footage:
+          type: number
+          minimum: 0
+          nullable: true
+        land_size:
+          type: number
+          minimum: 0
+          nullable: true
+        land_size_unit:
+          type: string
+          enum:
+            - acres
+            - hectares
+            - sqft
+            - sqm
+          nullable: true
+        bedrooms:
+          type: integer
+          minimum: 0
+          nullable: true
+        bathrooms:
+          type: integer
+          minimum: 0
+          nullable: true
+        year_built:
+          type: integer
+          minimum: 1800
+          nullable: true
+        natural_features:
+          type: string
+          nullable: true
+        outdoor_amenities:
+          type: string
+          nullable: true
+        indoor_amenities:
+          type: string
+          nullable: true
+        view_types:
+          type: string
+          nullable: true
+        nearby_attractions:
+          type: string
+          nullable: true
+        distance_to_landmarks:
+          type: string
+          nullable: true
+        environmental_features:
+          type: string
+          nullable: true
+        outdoor_activities:
+          type: string
+          nullable: true
+        property_condition:
+          type: string
+          enum:
+            - excellent
+            - very good
+            - good
+            - fair
+            - needs work
+            - pristine
+            - restored
+          nullable: true
+        special_features:
+          type: string
+          nullable: true
+        listing_duration_days:
+          type: integer
+          minimum: 1
+          default: 90
+    UpdatePropertyRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 500
+        description:
+          type: string
+          maxLength: 5000
+          nullable: true
+        property_type:
+          type: string
+          enum:
+            - villa
+            - cabin
+            - condominium
+            - farm
+            - land
+            - mansion
+            - house
+            - apartment
+            - commercial
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+            - sold
+            - pending
+            - withdrawn
+        price:
+          type: number
+          minimum: 0
+        currency:
+          type: string
+        country:
+          type: string
+          minLength: 1
+          maxLength: 100
+        region:
+          type: string
+          maxLength: 100
+          nullable: true
+        city:
+          type: string
+          maxLength: 100
+          nullable: true
+        address:
+          type: string
+          maxLength: 500
+          nullable: true
+        latitude:
+          type: number
+          minimum: -90
+          maximum: 90
+          nullable: true
+        longitude:
+          type: number
+          minimum: -180
+          maximum: 180
+          nullable: true
+        square_footage:
+          type: number
+          minimum: 0
+          nullable: true
+        land_size:
+          type: number
+          minimum: 0
+          nullable: true
+        land_size_unit:
+          type: string
+          enum:
+            - acres
+            - hectares
+            - sqft
+            - sqm
+          nullable: true
+        bedrooms:
+          type: integer
+          minimum: 0
+          nullable: true
+        bathrooms:
+          type: integer
+          minimum: 0
+          nullable: true
+        year_built:
+          type: integer
+          minimum: 1800
+          nullable: true
+        property_condition:
+          type: string
+          enum:
+            - excellent
+            - very good
+            - good
+            - fair
+            - needs work
+            - pristine
+            - restored
+          nullable: true
+        is_featured:
+          type: boolean
+        featured_until:
+          type: string
+          format: date-time
+          nullable: true
+    PropertySearchResponse:
+      type: object
+      properties:
+        properties:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/Property"
+              - type: object
+                properties:
+                  primary_photo:
+                    $ref: "#/components/schemas/PropertyPhoto"
+        total_count:
+          type: integer
+        page:
+          type: integer
+        per_page:
+          type: integer
+        total_pages:
+          type: integer
+    PropertyPhoto:
+      type: object
+      properties:
+        photo_id:
+          type: string
+        property_id:
+          type: string
+        photo_url:
+          type: string
+        caption:
+          type: string
+          nullable: true
+        photo_order:
+          type: integer
+        is_primary:
+          type: boolean
+        photo_type:
+          type: string
+          enum:
+            - exterior
+            - interior
+            - aerial
+            - floor_plan
+            - amenity
+          nullable: true
+        file_size:
+          type: integer
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    CreatePropertyPhotoRequest:
+      type: object
+      required:
+        - photo_url
+      properties:
+        photo_url:
+          type: string
+          format: uri
+        caption:
+          type: string
+          maxLength: 500
+          nullable: true
+        photo_order:
+          type: integer
+          minimum: 0
+          default: 0
+        is_primary:
+          type: boolean
+          default: false
+        photo_type:
+          type: string
+          enum:
+            - exterior
+            - interior
+            - aerial
+            - floor_plan
+            - amenity
+          nullable: true
+        file_size:
+          type: integer
+          minimum: 1
+          nullable: true
+    UpdatePropertyPhotoRequest:
+      type: object
+      properties:
+        caption:
+          type: string
+          maxLength: 500
+          nullable: true
+        photo_order:
+          type: integer
+          minimum: 0
+        is_primary:
+          type: boolean
+        photo_type:
+          type: string
+          enum:
+            - exterior
+            - interior
+            - aerial
+            - floor_plan
+            - amenity
+          nullable: true
+    PropertyInquiry:
+      type: object
+      properties:
+        inquiry_id:
+          type: string
+        property_id:
+          type: string
+        sender_user_id:
+          type: string
+          nullable: true
+        recipient_user_id:
+          type: string
+        sender_name:
+          type: string
+        sender_email:
+          type: string
+        sender_phone:
+          type: string
+          nullable: true
+        message:
+          type: string
+        status:
+          type: string
+          enum:
+            - unread
+            - read
+            - responded
+            - archived
+        is_interested_in_viewing:
+          type: boolean
+        wants_similar_properties:
+          type: boolean
+        response_message:
+          type: string
+          nullable: true
+        responded_at:
+          type: string
+          format: date-time
+          nullable: true
+        priority:
+          type: string
+          enum:
+            - low
+            - normal
+            - high
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CreatePropertyInquiryRequest:
+      type: object
+      required:
+        - recipient_user_id
+        - sender_name
+        - sender_email
+        - message
+      properties:
+        sender_user_id:
+          type: string
+          nullable: true
+        recipient_user_id:
+          type: string
+        sender_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        sender_email:
+          type: string
+          format: email
+        sender_phone:
+          type: string
+          maxLength: 50
+          nullable: true
+        message:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        is_interested_in_viewing:
+          type: boolean
+          default: false
+        wants_similar_properties:
+          type: boolean
+          default: false
+        priority:
+          type: string
+          enum:
+            - low
+            - normal
+            - high
+          default: normal
+    UpdatePropertyInquiryRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - unread
+            - read
+            - responded
+            - archived
+        response_message:
+          type: string
+          maxLength: 2000
+          nullable: true
+        priority:
+          type: string
+          enum:
+            - low
+            - normal
+            - high
+    InquiryListResponse:
+      type: object
+      properties:
+        inquiries:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/PropertyInquiry"
+              - type: object
+                properties:
+                  property:
+                    $ref: "#/components/schemas/Property"
+        total_count:
+          type: integer
+        page:
+          type: integer
+        per_page:
+          type: integer
+    InquiryResponse:
+      type: object
+      properties:
+        response_id:
+          type: string
+        inquiry_id:
+          type: string
+        sender_user_id:
+          type: string
+        message:
+          type: string
+        attachments:
+          type: string
+          nullable: true
+        is_read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    CreateInquiryResponseRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        attachments:
+          type: string
+          nullable: true
+    SavedProperty:
+      type: object
+      properties:
+        saved_property_id:
+          type: string
+        user_id:
+          type: string
+        property_id:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    CreateSavedPropertyRequest:
+      type: object
+      required:
+        - property_id
+      properties:
+        property_id:
+          type: string
+        notes:
+          type: string
+          maxLength: 1000
+          nullable: true
+    UpdateSavedPropertyRequest:
+      type: object
+      properties:
+        notes:
+          type: string
+          maxLength: 1000
+          nullable: true
+    SavedPropertiesResponse:
+      type: object
+      properties:
+        saved_properties:
+          type: array
+          items:
+            allOf:
+              - $ref: "#/components/schemas/SavedProperty"
+              - type: object
+                properties:
+                  property:
+                    $ref: "#/components/schemas/Property"
+        total_count:
+          type: integer
+    SavedSearch:
+      type: object
+      properties:
+        saved_search_id:
+          type: string
+        user_id:
+          type: string
+        search_name:
+          type: string
+        country:
+          type: string
+          nullable: true
+        property_type:
+          type: string
+          enum:
+            - villa
+            - cabin
+            - condominium
+            - farm
+            - land
+            - mansion
+            - house
+            - apartment
+            - commercial
+          nullable: true
+        price_min:
+          type: number
+          nullable: true
+        price_max:
+          type: number
+          nullable: true
+        bedrooms_min:
+          type: integer
+          nullable: true
+        bathrooms_min:
+          type: integer
+          nullable: true
+        square_footage_min:
+          type: number
+          nullable: true
+        square_footage_max:
+          type: number
+          nullable: true
+        land_size_min:
+          type: number
+          nullable: true
+        land_size_max:
+          type: number
+          nullable: true
+        natural_features:
+          type: string
+          nullable: true
+        outdoor_amenities:
+          type: string
+          nullable: true
+        location_text:
+          type: string
+          nullable: true
+        alert_frequency:
+          type: string
+          enum:
+            - daily
+            - weekly
+            - monthly
+            - never
+        is_active:
+          type: boolean
+        last_alert_sent:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CreateSavedSearchRequest:
+      type: object
+      required:
+        - search_name
+      properties:
+        search_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        country:
+          type: string
+          maxLength: 100
+          nullable: true
+        property_type:
+          type: string
+          enum:
+            - villa
+            - cabin
+            - condominium
+            - farm
+            - land
+            - mansion
+            - house
+            - apartment
+            - commercial
+          nullable: true
+        price_min:
+          type: number
+          minimum: 0
+          nullable: true
+        price_max:
+          type: number
+          minimum: 0
+          nullable: true
+        bedrooms_min:
+          type: integer
+          minimum: 0
+          nullable: true
+        bathrooms_min:
+          type: integer
+          minimum: 0
+          nullable: true
+        square_footage_min:
+          type: number
+          minimum: 0
+          nullable: true
+        square_footage_max:
+          type: number
+          minimum: 0
+          nullable: true
+        land_size_min:
+          type: number
+          minimum: 0
+          nullable: true
+        land_size_max:
+          type: number
+          minimum: 0
+          nullable: true
+        natural_features:
+          type: string
+          nullable: true
+        outdoor_amenities:
+          type: string
+          nullable: true
+        location_text:
+          type: string
+          maxLength: 500
+          nullable: true
+        alert_frequency:
+          type: string
+          enum:
+            - daily
+            - weekly
+            - monthly
+            - never
+          default: weekly
+        is_active:
+          type: boolean
+          default: true
+    UpdateSavedSearchRequest:
+      type: object
+      properties:
+        search_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        country:
+          type: string
+          maxLength: 100
+          nullable: true
+        property_type:
+          type: string
+          enum:
+            - villa
+            - cabin
+            - condominium
+            - farm
+            - land
+            - mansion
+            - house
+            - apartment
+            - commercial
+          nullable: true
+        price_min:
+          type: number
+          minimum: 0
+          nullable: true
+        price_max:
+          type: number
+          minimum: 0
+          nullable: true
+        bedrooms_min:
+          type: integer
+          minimum: 0
+          nullable: true
+        bathrooms_min:
+          type: integer
+          minimum: 0
+          nullable: true
+        square_footage_min:
+          type: number
+          minimum: 0
+          nullable: true
+        square_footage_max:
+          type: number
+          minimum: 0
+          nullable: true
+        land_size_min:
+          type: number
+          minimum: 0
+          nullable: true
+        land_size_max:
+          type: number
+          minimum: 0
+          nullable: true
+        natural_features:
+          type: string
+          nullable: true
+        outdoor_amenities:
+          type: string
+          nullable: true
+        location_text:
+          type: string
+          maxLength: 500
+          nullable: true
+        alert_frequency:
+          type: string
+          enum:
+            - daily
+            - weekly
+            - monthly
+            - never
+        is_active:
+          type: boolean
+    Notification:
+      type: object
+      properties:
+        notification_id:
+          type: string
+        user_id:
+          type: string
+        type:
+          type: string
+          enum:
+            - inquiry
+            - saved_search
+            - property_update
+            - system
+            - marketing
+        title:
+          type: string
+        message:
+          type: string
+        related_property_id:
+          type: string
+          nullable: true
+        related_inquiry_id:
+          type: string
+          nullable: true
+        is_read:
+          type: boolean
+        is_email_sent:
+          type: boolean
+        email_sent_at:
+          type: string
+          format: date-time
+          nullable: true
+        action_url:
+          type: string
+          nullable: true
+        priority:
+          type: string
+          enum:
+            - low
+            - normal
+            - high
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    NotificationListResponse:
+      type: object
+      properties:
+        notifications:
+          type: array
+          items:
+            $ref: "#/components/schemas/Notification"
+        total_count:
+          type: integer
+        unread_count:
+          type: integer
+    CreatePropertyViewRequest:
+      type: object
+      properties:
+        user_id:
+          type: string
+          nullable: true
+        session_id:
+          type: string
+          nullable: true
+        ip_address:
+          type: string
+          maxLength: 45
+          nullable: true
+        user_agent:
+          type: string
+          maxLength: 500
+          nullable: true
+        referrer_url:
+          type: string
+          format: uri
+          nullable: true
+        view_duration_seconds:
+          type: integer
+          minimum: 1
+          nullable: true
+    SearchHistory:
+      type: object
+      properties:
+        search_history_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        session_id:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+        property_type:
+          type: string
+          enum:
+            - villa
+            - cabin
+            - condominium
+            - farm
+            - land
+            - mansion
+            - house
+            - apartment
+            - commercial
+          nullable: true
+        price_min:
+          type: number
+          nullable: true
+        price_max:
+          type: number
+          nullable: true
+        bedrooms_min:
+          type: integer
+          nullable: true
+        bathrooms_min:
+          type: integer
+          nullable: true
+        square_footage_min:
+          type: number
+          nullable: true
+        square_footage_max:
+          type: number
+          nullable: true
+        land_size_min:
+          type: number
+          nullable: true
+        land_size_max:
+          type: number
+          nullable: true
+        natural_features:
+          type: string
+          nullable: true
+        outdoor_amenities:
+          type: string
+          nullable: true
+        location_text:
+          type: string
+          nullable: true
+        sort_by:
+          type: string
+          nullable: true
+        results_count:
+          type: integer
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    CreateSearchHistoryRequest:
+      type: object
+      properties:
+        user_id:
+          type: string
+          nullable: true
+        session_id:
+          type: string
+          nullable: true
+        country:
+          type: string
+          maxLength: 100
+          nullable: true
+        property_type:
+          type: string
+          enum:
+            - villa
+            - cabin
+            - condominium
+            - farm
+            - land
+            - mansion
+            - house
+            - apartment
+            - commercial
+          nullable: true
+        price_min:
+          type: number
+          minimum: 0
+          nullable: true
+        price_max:
+          type: number
+          minimum: 0
+          nullable: true
+        bedrooms_min:
+          type: integer
+          minimum: 0
+          nullable: true
+        bathrooms_min:
+          type: integer
+          minimum: 0
+          nullable: true
+        square_footage_min:
+          type: number
+          minimum: 0
+          nullable: true
+        square_footage_max:
+          type: number
+          minimum: 0
+          nullable: true
+        land_size_min:
+          type: number
+          minimum: 0
+          nullable: true
+        land_size_max:
+          type: number
+          minimum: 0
+          nullable: true
+        natural_features:
+          type: string
+          nullable: true
+        outdoor_amenities:
+          type: string
+          nullable: true
+        location_text:
+          type: string
+          maxLength: 500
+          nullable: true
+        sort_by:
+          type: string
+          maxLength: 50
+          nullable: true
+        results_count:
+          type: integer
+          minimum: 0
+          nullable: true
+    DashboardStats:
+      type: object
+      properties:
+        user_type:
+          type: string
+        total_properties:
+          type: integer
+        total_inquiries:
+          type: integer
+        total_views:
+          type: integer
+        total_favorites:
+          type: integer
+        active_listings:
+          type: integer
+        pending_inquiries:
+          type: integer
+        recent_activity:
+          type: array
+          items:
+            type: object
+            properties:
+              activity_type:
+                type: string
+              description:
+                type: string
+              timestamp:
+                type: string
+                format: date-time
+              related_id:
+                type: string
+                nullable: true
+    PropertyAnalytics:
+      type: object
+      properties:
+        analytics_id:
+          type: string
+        property_id:
+          type: string
+        date:
+          type: string
+          format: date
+        views_count:
+          type: integer
+        inquiries_count:
+          type: integer
+        favorites_count:
+          type: integer
+        shares_count:
+          type: integer
+        search_impressions:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: false
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+        code:
+          type: string

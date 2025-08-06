@@ -1,0 +1,15 @@
+{
+  "timestamp": 1754507534776,
+  "operation": {
+    "id": "backend:specifications:asyncapi"
+  },
+  "projectId": "real-estate-for-countries-with-nature-and-views",
+  "files": [
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/backend/asyncapi.yaml",
+      "type": "text",
+      "size": 49887,
+      "dependencies": false
+    }
+  ]
+}

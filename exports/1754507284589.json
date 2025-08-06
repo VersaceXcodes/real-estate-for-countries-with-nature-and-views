@@ -1,0 +1,15 @@
+{
+  "timestamp": 1754507284589,
+  "operation": {
+    "id": "db:schemas:zod"
+  },
+  "projectId": "real-estate-for-countries-with-nature-and-views",
+  "files": [
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/backend/schema.ts",
+      "type": "text",
+      "size": 26487,
+      "dependencies": false
+    }
+  ]
+}

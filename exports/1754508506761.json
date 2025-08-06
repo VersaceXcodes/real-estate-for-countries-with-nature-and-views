@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754508506761,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_PasswordReset",
+      "version": "1754508414423"
+    }
+  },
+  "projectId": "real-estate-for-countries-with-nature-and-views",
+  "files": [
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/vitereact/src/components/views/UV_PasswordReset.tsx",
+      "type": "text",
+      "size": 16854,
+      "dependencies": false
+    }
+  ]
+}

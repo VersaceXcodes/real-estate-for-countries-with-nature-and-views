@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754508413902,
+  "operation": {
+    "id": "webapp:react:root",
+    "refs": {
+      "id": "app",
+      "version": "1754508365519"
+    }
+  },
+  "projectId": "real-estate-for-countries-with-nature-and-views",
+  "files": [
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/vitereact/src/App.tsx",
+      "type": "text",
+      "size": 8302,
+      "dependencies": false
+    }
+  ]
+}

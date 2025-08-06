@@ -1,0 +1,15 @@
+{
+  "timestamp": 1754507455137,
+  "operation": {
+    "id": "backend:specifications:openapi"
+  },
+  "projectId": "real-estate-for-countries-with-nature-and-views",
+  "files": [
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/backend/openapi.yaml",
+      "type": "text",
+      "size": 62128,
+      "dependencies": false
+    }
+  ]
+}

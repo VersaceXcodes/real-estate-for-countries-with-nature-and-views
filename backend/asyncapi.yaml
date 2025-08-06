@@ -1,0 +1,1644 @@
+asyncapi: 2.0.0
+info:
+  title: NatureEstate Realtime Events API
+  version: 1.0.0
+  description: AsyncAPI specification for realtime events in the NatureEstate platform
+servers:
+  websocket:
+    url: ws://localhost:3000
+    protocol: ws
+    description: WebSocket server for realtime events
+channels:
+  user/authentication:
+    description: User authentication and session events
+    subscribe:
+      operationId: handleUserAuthEvents
+      message:
+        oneOf:
+          - $ref: "#/components/messages/UserLoggedIn"
+          - $ref: "#/components/messages/UserLoggedOut"
+          - $ref: "#/components/messages/UserSessionExpired"
+          - $ref: "#/components/messages/UserProfileUpdated"
+    publish:
+      operationId: sendUserAuthEvents
+      message:
+        oneOf:
+          - $ref: "#/components/messages/UserLoggedIn"
+          - $ref: "#/components/messages/UserLoggedOut"
+          - $ref: "#/components/messages/UserSessionExpired"
+          - $ref: "#/components/messages/UserProfileUpdated"
+  property/updates:
+    description: Property creation, updates, and status changes
+    subscribe:
+      operationId: handlePropertyUpdates
+      message:
+        oneOf:
+          - $ref: "#/components/messages/PropertyCreated"
+          - $ref: "#/components/messages/PropertyUpdated"
+          - $ref: "#/components/messages/PropertyStatusChanged"
+          - $ref: "#/components/messages/PropertyDeleted"
+          - $ref: "#/components/messages/PropertyViewCountUpdated"
+    publish:
+      operationId: sendPropertyUpdates
+      message:
+        oneOf:
+          - $ref: "#/components/messages/PropertyCreated"
+          - $ref: "#/components/messages/PropertyUpdated"
+          - $ref: "#/components/messages/PropertyStatusChanged"
+          - $ref: "#/components/messages/PropertyDeleted"
+          - $ref: "#/components/messages/PropertyViewCountUpdated"
+  property/photos:
+    description: Property photo management events
+    subscribe:
+      operationId: handlePropertyPhotoEvents
+      message:
+        oneOf:
+          - $ref: "#/components/messages/PropertyPhotoAdded"
+          - $ref: "#/components/messages/PropertyPhotoUpdated"
+          - $ref: "#/components/messages/PropertyPhotoDeleted"
+          - $ref: "#/components/messages/PropertyPhotosReordered"
+    publish:
+      operationId: sendPropertyPhotoEvents
+      message:
+        oneOf:
+          - $ref: "#/components/messages/PropertyPhotoAdded"
+          - $ref: "#/components/messages/PropertyPhotoUpdated"
+          - $ref: "#/components/messages/PropertyPhotoDeleted"
+          - $ref: "#/components/messages/PropertyPhotosReordered"
+  inquiry/updates:
+    description: Property inquiry and communication events
+    subscribe:
+      operationId: handleInquiryUpdates
+      message:
+        oneOf:
+          - $ref: "#/components/messages/InquiryCreated"
+          - $ref: "#/components/messages/InquiryStatusUpdated"
+          - $ref: "#/components/messages/InquiryResponseAdded"
+          - $ref: "#/components/messages/InquiryRead"
+    publish:
+      operationId: sendInquiryUpdates
+      message:
+        oneOf:
+          - $ref: "#/components/messages/InquiryCreated"
+          - $ref: "#/components/messages/InquiryStatusUpdated"
+          - $ref: "#/components/messages/InquiryResponseAdded"
+          - $ref: "#/components/messages/InquiryRead"
+  saved-properties/updates:
+    description: Saved properties management events
+    subscribe:
+      operationId: handleSavedPropertiesUpdates
+      message:
+        oneOf:
+          - $ref: "#/components/messages/PropertySaved"
+          - $ref: "#/components/messages/PropertyUnsaved"
+          - $ref: "#/components/messages/SavedPropertyNotesUpdated"
+    publish:
+      operationId: sendSavedPropertiesUpdates
+      message:
+        oneOf:
+          - $ref: "#/components/messages/PropertySaved"
+          - $ref: "#/components/messages/PropertyUnsaved"
+          - $ref: "#/components/messages/SavedPropertyNotesUpdated"
+  search/alerts:
+    description: Search-related events and property alerts
+    subscribe:
+      operationId: handleSearchAlerts
+      message:
+        oneOf:
+          - $ref: "#/components/messages/SavedSearchTriggered"
+          - $ref: "#/components/messages/NewPropertyMatchingSavedSearch"
+          - $ref: "#/components/messages/SavedSearchCreated"
+          - $ref: "#/components/messages/SavedSearchUpdated"
+          - $ref: "#/components/messages/SavedSearchDeleted"
+    publish:
+      operationId: sendSearchAlerts
+      message:
+        oneOf:
+          - $ref: "#/components/messages/SavedSearchTriggered"
+          - $ref: "#/components/messages/NewPropertyMatchingSavedSearch"
+          - $ref: "#/components/messages/SavedSearchCreated"
+          - $ref: "#/components/messages/SavedSearchUpdated"
+          - $ref: "#/components/messages/SavedSearchDeleted"
+  notifications/realtime:
+    description: Real-time notification delivery and management
+    subscribe:
+      operationId: handleNotifications
+      message:
+        oneOf:
+          - $ref: "#/components/messages/NotificationCreated"
+          - $ref: "#/components/messages/NotificationRead"
+          - $ref: "#/components/messages/NotificationDeleted"
+          - $ref: "#/components/messages/NotificationCountUpdated"
+    publish:
+      operationId: sendNotifications
+      message:
+        oneOf:
+          - $ref: "#/components/messages/NotificationCreated"
+          - $ref: "#/components/messages/NotificationRead"
+          - $ref: "#/components/messages/NotificationDeleted"
+          - $ref: "#/components/messages/NotificationCountUpdated"
+  analytics/realtime:
+    description: Real-time analytics and activity tracking
+    subscribe:
+      operationId: handleAnalytics
+      message:
+        oneOf:
+          - $ref: "#/components/messages/PropertyViewed"
+          - $ref: "#/components/messages/UserActivityTracked"
+          - $ref: "#/components/messages/SearchPerformed"
+          - $ref: "#/components/messages/AnalyticsUpdated"
+    publish:
+      operationId: sendAnalytics
+      message:
+        oneOf:
+          - $ref: "#/components/messages/PropertyViewed"
+          - $ref: "#/components/messages/UserActivityTracked"
+          - $ref: "#/components/messages/SearchPerformed"
+          - $ref: "#/components/messages/AnalyticsUpdated"
+components:
+  messages:
+    UserLoggedIn:
+      name: user_logged_in
+      title: User Logged In
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/UserAuthEvent"
+    UserLoggedOut:
+      name: user_logged_out
+      title: User Logged Out
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/UserLogoutEvent"
+    UserSessionExpired:
+      name: user_session_expired
+      title: User Session Expired
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/UserSessionExpiredEvent"
+    UserProfileUpdated:
+      name: user_profile_updated
+      title: User Profile Updated
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/UserProfileUpdatedEvent"
+    PropertyCreated:
+      name: property_created
+      title: Property Created
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PropertyCreatedEvent"
+    PropertyUpdated:
+      name: property_updated
+      title: Property Updated
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PropertyUpdatedEvent"
+    PropertyStatusChanged:
+      name: property_status_changed
+      title: Property Status Changed
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PropertyStatusChangedEvent"
+    PropertyDeleted:
+      name: property_deleted
+      title: Property Deleted
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PropertyDeletedEvent"
+    PropertyViewCountUpdated:
+      name: property_view_count_updated
+      title: Property View Count Updated
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PropertyViewCountUpdatedEvent"
+    PropertyPhotoAdded:
+      name: property_photo_added
+      title: Property Photo Added
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PropertyPhotoAddedEvent"
+    PropertyPhotoUpdated:
+      name: property_photo_updated
+      title: Property Photo Updated
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PropertyPhotoUpdatedEvent"
+    PropertyPhotoDeleted:
+      name: property_photo_deleted
+      title: Property Photo Deleted
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PropertyPhotoDeletedEvent"
+    PropertyPhotosReordered:
+      name: property_photos_reordered
+      title: Property Photos Reordered
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PropertyPhotosReorderedEvent"
+    InquiryCreated:
+      name: inquiry_created
+      title: Inquiry Created
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/InquiryCreatedEvent"
+    InquiryStatusUpdated:
+      name: inquiry_status_updated
+      title: Inquiry Status Updated
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/InquiryStatusUpdatedEvent"
+    InquiryResponseAdded:
+      name: inquiry_response_added
+      title: Inquiry Response Added
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/InquiryResponseAddedEvent"
+    InquiryRead:
+      name: inquiry_read
+      title: Inquiry Read
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/InquiryReadEvent"
+    PropertySaved:
+      name: property_saved
+      title: Property Saved
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PropertySavedEvent"
+    PropertyUnsaved:
+      name: property_unsaved
+      title: Property Unsaved
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PropertyUnsavedEvent"
+    SavedPropertyNotesUpdated:
+      name: saved_property_notes_updated
+      title: Saved Property Notes Updated
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/SavedPropertyNotesUpdatedEvent"
+    SavedSearchTriggered:
+      name: saved_search_triggered
+      title: Saved Search Triggered
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/SavedSearchTriggeredEvent"
+    NewPropertyMatchingSavedSearch:
+      name: new_property_matching_saved_search
+      title: New Property Matching Saved Search
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/NewPropertyMatchingSavedSearchEvent"
+    SavedSearchCreated:
+      name: saved_search_created
+      title: Saved Search Created
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/SavedSearchCreatedEvent"
+    SavedSearchUpdated:
+      name: saved_search_updated
+      title: Saved Search Updated
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/SavedSearchUpdatedEvent"
+    SavedSearchDeleted:
+      name: saved_search_deleted
+      title: Saved Search Deleted
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/SavedSearchDeletedEvent"
+    NotificationCreated:
+      name: notification_created
+      title: Notification Created
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/NotificationCreatedEvent"
+    NotificationRead:
+      name: notification_read
+      title: Notification Read
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/NotificationReadEvent"
+    NotificationDeleted:
+      name: notification_deleted
+      title: Notification Deleted
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/NotificationDeletedEvent"
+    NotificationCountUpdated:
+      name: notification_count_updated
+      title: Notification Count Updated
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/NotificationCountUpdatedEvent"
+    PropertyViewed:
+      name: property_viewed
+      title: Property Viewed
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/PropertyViewedEvent"
+    UserActivityTracked:
+      name: user_activity_tracked
+      title: User Activity Tracked
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/UserActivityTrackedEvent"
+    SearchPerformed:
+      name: search_performed
+      title: Search Performed
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/SearchPerformedEvent"
+    AnalyticsUpdated:
+      name: analytics_updated
+      title: Analytics Updated
+      contentType: application/json
+      payload:
+        $ref: "#/components/schemas/AnalyticsUpdatedEvent"
+  schemas:
+    BaseEvent:
+      type: object
+      required:
+        - event_id
+        - event_type
+        - timestamp
+        - user_id
+      properties:
+        event_id:
+          type: string
+          description: Unique identifier for the event
+        event_type:
+          type: string
+          description: Type of the event
+        timestamp:
+          type: string
+          description: ISO 8601 timestamp when event occurred
+        user_id:
+          type: string
+          nullable: true
+          description: ID of the user who triggered the event
+    UserAuthEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - user_data
+            - session_id
+          properties:
+            user_data:
+              type: object
+              required:
+                - user_id
+                - email
+                - name
+                - user_type
+              properties:
+                user_id:
+                  type: string
+                email:
+                  type: string
+                name:
+                  type: string
+                user_type:
+                  type: string
+                  enum:
+                    - buyer
+                    - seller
+                    - agent
+                    - admin
+                profile_photo_url:
+                  type: string
+                  nullable: true
+                phone:
+                  type: string
+                  nullable: true
+                created_at:
+                  type: string
+            session_id:
+              type: string
+            device_info:
+              type: string
+              nullable: true
+            ip_address:
+              type: string
+              nullable: true
+    UserLogoutEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - session_id
+          properties:
+            session_id:
+              type: string
+            reason:
+              type: string
+              enum:
+                - user_initiated
+                - session_expired
+                - force_logout
+    UserSessionExpiredEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - session_id
+            - expired_at
+          properties:
+            session_id:
+              type: string
+            expired_at:
+              type: string
+            auto_extend_available:
+              type: boolean
+    UserProfileUpdatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - updated_fields
+          properties:
+            updated_fields:
+              type: object
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+                  nullable: true
+                profile_photo_url:
+                  type: string
+                  nullable: true
+                notification_preferences:
+                  type: string
+                  nullable: true
+                countries_of_interest:
+                  type: string
+                  nullable: true
+    PropertyCreatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - property_data
+          properties:
+            property_data:
+              type: object
+              required:
+                - property_id
+                - user_id
+                - title
+                - property_type
+                - status
+                - price
+                - currency
+                - country
+              properties:
+                property_id:
+                  type: string
+                user_id:
+                  type: string
+                title:
+                  type: string
+                description:
+                  type: string
+                  nullable: true
+                property_type:
+                  type: string
+                  enum:
+                    - villa
+                    - cabin
+                    - condominium
+                    - farm
+                    - land
+                    - mansion
+                    - house
+                    - apartment
+                    - commercial
+                status:
+                  type: string
+                  enum:
+                    - active
+                    - inactive
+                    - sold
+                    - pending
+                    - withdrawn
+                price:
+                  type: number
+                currency:
+                  type: string
+                country:
+                  type: string
+                region:
+                  type: string
+                  nullable: true
+                city:
+                  type: string
+                  nullable: true
+                address:
+                  type: string
+                  nullable: true
+                latitude:
+                  type: number
+                  nullable: true
+                longitude:
+                  type: number
+                  nullable: true
+                square_footage:
+                  type: number
+                  nullable: true
+                land_size:
+                  type: number
+                  nullable: true
+                land_size_unit:
+                  type: string
+                  nullable: true
+                  enum:
+                    - acres
+                    - hectares
+                    - sqft
+                    - sqm
+                bedrooms:
+                  type: integer
+                  nullable: true
+                bathrooms:
+                  type: integer
+                  nullable: true
+                year_built:
+                  type: integer
+                  nullable: true
+                natural_features:
+                  type: string
+                  nullable: true
+                outdoor_amenities:
+                  type: string
+                  nullable: true
+                indoor_amenities:
+                  type: string
+                  nullable: true
+                view_types:
+                  type: string
+                  nullable: true
+                nearby_attractions:
+                  type: string
+                  nullable: true
+                distance_to_landmarks:
+                  type: string
+                  nullable: true
+                environmental_features:
+                  type: string
+                  nullable: true
+                outdoor_activities:
+                  type: string
+                  nullable: true
+                property_condition:
+                  type: string
+                  nullable: true
+                  enum:
+                    - excellent
+                    - very good
+                    - good
+                    - fair
+                    - needs work
+                    - pristine
+                    - restored
+                special_features:
+                  type: string
+                  nullable: true
+                listing_duration_days:
+                  type: integer
+                is_featured:
+                  type: boolean
+                featured_until:
+                  type: string
+                  nullable: true
+                view_count:
+                  type: integer
+                inquiry_count:
+                  type: integer
+                favorite_count:
+                  type: integer
+                created_at:
+                  type: string
+                updated_at:
+                  type: string
+                expires_at:
+                  type: string
+                  nullable: true
+    PropertyUpdatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - property_id
+            - updated_fields
+          properties:
+            property_id:
+              type: string
+            updated_fields:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                  nullable: true
+                property_type:
+                  type: string
+                  enum:
+                    - villa
+                    - cabin
+                    - condominium
+                    - farm
+                    - land
+                    - mansion
+                    - house
+                    - apartment
+                    - commercial
+                price:
+                  type: number
+                currency:
+                  type: string
+                country:
+                  type: string
+                region:
+                  type: string
+                  nullable: true
+                city:
+                  type: string
+                  nullable: true
+                address:
+                  type: string
+                  nullable: true
+                latitude:
+                  type: number
+                  nullable: true
+                longitude:
+                  type: number
+                  nullable: true
+                square_footage:
+                  type: number
+                  nullable: true
+                land_size:
+                  type: number
+                  nullable: true
+                land_size_unit:
+                  type: string
+                  nullable: true
+                  enum:
+                    - acres
+                    - hectares
+                    - sqft
+                    - sqm
+                bedrooms:
+                  type: integer
+                  nullable: true
+                bathrooms:
+                  type: integer
+                  nullable: true
+                year_built:
+                  type: integer
+                  nullable: true
+                property_condition:
+                  type: string
+                  nullable: true
+                  enum:
+                    - excellent
+                    - very good
+                    - good
+                    - fair
+                    - needs work
+                    - pristine
+                    - restored
+                is_featured:
+                  type: boolean
+                featured_until:
+                  type: string
+                  nullable: true
+    PropertyStatusChangedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - property_id
+            - old_status
+            - new_status
+          properties:
+            property_id:
+              type: string
+            old_status:
+              type: string
+              enum:
+                - active
+                - inactive
+                - sold
+                - pending
+                - withdrawn
+            new_status:
+              type: string
+              enum:
+                - active
+                - inactive
+                - sold
+                - pending
+                - withdrawn
+            reason:
+              type: string
+              nullable: true
+    PropertyDeletedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - property_id
+          properties:
+            property_id:
+              type: string
+            reason:
+              type: string
+              nullable: true
+    PropertyViewCountUpdatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - property_id
+            - view_count
+          properties:
+            property_id:
+              type: string
+            view_count:
+              type: integer
+            previous_count:
+              type: integer
+    PropertyPhotoAddedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - property_id
+            - photo_data
+          properties:
+            property_id:
+              type: string
+            photo_data:
+              type: object
+              required:
+                - photo_id
+                - photo_url
+                - photo_order
+                - is_primary
+              properties:
+                photo_id:
+                  type: string
+                photo_url:
+                  type: string
+                caption:
+                  type: string
+                  nullable: true
+                photo_order:
+                  type: integer
+                is_primary:
+                  type: boolean
+                photo_type:
+                  type: string
+                  nullable: true
+                  enum:
+                    - exterior
+                    - interior
+                    - aerial
+                    - floor_plan
+                    - amenity
+                file_size:
+                  type: integer
+                  nullable: true
+                created_at:
+                  type: string
+    PropertyPhotoUpdatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - property_id
+            - photo_id
+            - updated_fields
+          properties:
+            property_id:
+              type: string
+            photo_id:
+              type: string
+            updated_fields:
+              type: object
+              properties:
+                caption:
+                  type: string
+                  nullable: true
+                photo_order:
+                  type: integer
+                is_primary:
+                  type: boolean
+                photo_type:
+                  type: string
+                  nullable: true
+                  enum:
+                    - exterior
+                    - interior
+                    - aerial
+                    - floor_plan
+                    - amenity
+    PropertyPhotoDeletedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - property_id
+            - photo_id
+          properties:
+            property_id:
+              type: string
+            photo_id:
+              type: string
+    PropertyPhotosReorderedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - property_id
+            - photo_order_updates
+          properties:
+            property_id:
+              type: string
+            photo_order_updates:
+              type: array
+              items:
+                type: object
+                required:
+                  - photo_id
+                  - new_order
+                properties:
+                  photo_id:
+                    type: string
+                  new_order:
+                    type: integer
+    InquiryCreatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - inquiry_data
+            - property_data
+          properties:
+            inquiry_data:
+              type: object
+              required:
+                - inquiry_id
+                - property_id
+                - recipient_user_id
+                - sender_name
+                - sender_email
+                - message
+                - status
+                - priority
+              properties:
+                inquiry_id:
+                  type: string
+                property_id:
+                  type: string
+                sender_user_id:
+                  type: string
+                  nullable: true
+                recipient_user_id:
+                  type: string
+                sender_name:
+                  type: string
+                sender_email:
+                  type: string
+                sender_phone:
+                  type: string
+                  nullable: true
+                message:
+                  type: string
+                status:
+                  type: string
+                  enum:
+                    - unread
+                    - read
+                    - responded
+                    - archived
+                is_interested_in_viewing:
+                  type: boolean
+                wants_similar_properties:
+                  type: boolean
+                priority:
+                  type: string
+                  enum:
+                    - low
+                    - normal
+                    - high
+                created_at:
+                  type: string
+            property_data:
+              type: object
+              required:
+                - property_id
+                - title
+                - price
+                - currency
+                - country
+              properties:
+                property_id:
+                  type: string
+                title:
+                  type: string
+                price:
+                  type: number
+                currency:
+                  type: string
+                country:
+                  type: string
+                region:
+                  type: string
+                  nullable: true
+                city:
+                  type: string
+                  nullable: true
+    InquiryStatusUpdatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - inquiry_id
+            - old_status
+            - new_status
+          properties:
+            inquiry_id:
+              type: string
+            property_id:
+              type: string
+            old_status:
+              type: string
+              enum:
+                - unread
+                - read
+                - responded
+                - archived
+            new_status:
+              type: string
+              enum:
+                - unread
+                - read
+                - responded
+                - archived
+            updated_by_user_id:
+              type: string
+    InquiryResponseAddedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - inquiry_id
+            - response_data
+          properties:
+            inquiry_id:
+              type: string
+            property_id:
+              type: string
+            response_data:
+              type: object
+              required:
+                - response_id
+                - sender_user_id
+                - message
+              properties:
+                response_id:
+                  type: string
+                sender_user_id:
+                  type: string
+                message:
+                  type: string
+                attachments:
+                  type: string
+                  nullable: true
+                is_read:
+                  type: boolean
+                created_at:
+                  type: string
+    InquiryReadEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - inquiry_id
+            - read_by_user_id
+          properties:
+            inquiry_id:
+              type: string
+            property_id:
+              type: string
+            read_by_user_id:
+              type: string
+            read_at:
+              type: string
+    PropertySavedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - saved_property_data
+            - property_data
+          properties:
+            saved_property_data:
+              type: object
+              required:
+                - saved_property_id
+                - user_id
+                - property_id
+              properties:
+                saved_property_id:
+                  type: string
+                user_id:
+                  type: string
+                property_id:
+                  type: string
+                notes:
+                  type: string
+                  nullable: true
+                created_at:
+                  type: string
+            property_data:
+              type: object
+              required:
+                - property_id
+                - title
+                - price
+                - currency
+                - country
+              properties:
+                property_id:
+                  type: string
+                title:
+                  type: string
+                price:
+                  type: number
+                currency:
+                  type: string
+                country:
+                  type: string
+                region:
+                  type: string
+                  nullable: true
+                city:
+                  type: string
+                  nullable: true
+                property_type:
+                  type: string
+                bedrooms:
+                  type: integer
+                  nullable: true
+                bathrooms:
+                  type: integer
+                  nullable: true
+    PropertyUnsavedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - saved_property_id
+            - property_id
+          properties:
+            saved_property_id:
+              type: string
+            property_id:
+              type: string
+    SavedPropertyNotesUpdatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - saved_property_id
+            - property_id
+            - notes
+          properties:
+            saved_property_id:
+              type: string
+            property_id:
+              type: string
+            notes:
+              type: string
+              nullable: true
+            previous_notes:
+              type: string
+              nullable: true
+    SavedSearchTriggeredEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - saved_search_id
+            - matching_properties_count
+          properties:
+            saved_search_id:
+              type: string
+            saved_search_name:
+              type: string
+            matching_properties_count:
+              type: integer
+            trigger_reason:
+              type: string
+              enum:
+                - scheduled_alert
+                - manual_trigger
+                - new_property_match
+    NewPropertyMatchingSavedSearchEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - saved_search_id
+            - property_data
+          properties:
+            saved_search_id:
+              type: string
+            saved_search_name:
+              type: string
+            property_data:
+              type: object
+              required:
+                - property_id
+                - title
+                - price
+                - currency
+                - country
+              properties:
+                property_id:
+                  type: string
+                title:
+                  type: string
+                price:
+                  type: number
+                currency:
+                  type: string
+                country:
+                  type: string
+                region:
+                  type: string
+                  nullable: true
+                city:
+                  type: string
+                  nullable: true
+                property_type:
+                  type: string
+                bedrooms:
+                  type: integer
+                  nullable: true
+                bathrooms:
+                  type: integer
+                  nullable: true
+                natural_features:
+                  type: string
+                  nullable: true
+    SavedSearchCreatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - saved_search_data
+          properties:
+            saved_search_data:
+              type: object
+              required:
+                - saved_search_id
+                - user_id
+                - search_name
+                - alert_frequency
+                - is_active
+              properties:
+                saved_search_id:
+                  type: string
+                user_id:
+                  type: string
+                search_name:
+                  type: string
+                country:
+                  type: string
+                  nullable: true
+                property_type:
+                  type: string
+                  nullable: true
+                  enum:
+                    - villa
+                    - cabin
+                    - condominium
+                    - farm
+                    - land
+                    - mansion
+                    - house
+                    - apartment
+                    - commercial
+                price_min:
+                  type: number
+                  nullable: true
+                price_max:
+                  type: number
+                  nullable: true
+                bedrooms_min:
+                  type: integer
+                  nullable: true
+                bathrooms_min:
+                  type: integer
+                  nullable: true
+                square_footage_min:
+                  type: number
+                  nullable: true
+                square_footage_max:
+                  type: number
+                  nullable: true
+                land_size_min:
+                  type: number
+                  nullable: true
+                land_size_max:
+                  type: number
+                  nullable: true
+                natural_features:
+                  type: string
+                  nullable: true
+                outdoor_amenities:
+                  type: string
+                  nullable: true
+                location_text:
+                  type: string
+                  nullable: true
+                alert_frequency:
+                  type: string
+                  enum:
+                    - daily
+                    - weekly
+                    - monthly
+                    - never
+                is_active:
+                  type: boolean
+                created_at:
+                  type: string
+    SavedSearchUpdatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - saved_search_id
+            - updated_fields
+          properties:
+            saved_search_id:
+              type: string
+            updated_fields:
+              type: object
+              properties:
+                search_name:
+                  type: string
+                country:
+                  type: string
+                  nullable: true
+                property_type:
+                  type: string
+                  nullable: true
+                  enum:
+                    - villa
+                    - cabin
+                    - condominium
+                    - farm
+                    - land
+                    - mansion
+                    - house
+                    - apartment
+                    - commercial
+                price_min:
+                  type: number
+                  nullable: true
+                price_max:
+                  type: number
+                  nullable: true
+                bedrooms_min:
+                  type: integer
+                  nullable: true
+                bathrooms_min:
+                  type: integer
+                  nullable: true
+                square_footage_min:
+                  type: number
+                  nullable: true
+                square_footage_max:
+                  type: number
+                  nullable: true
+                land_size_min:
+                  type: number
+                  nullable: true
+                land_size_max:
+                  type: number
+                  nullable: true
+                natural_features:
+                  type: string
+                  nullable: true
+                outdoor_amenities:
+                  type: string
+                  nullable: true
+                location_text:
+                  type: string
+                  nullable: true
+                alert_frequency:
+                  type: string
+                  enum:
+                    - daily
+                    - weekly
+                    - monthly
+                    - never
+                is_active:
+                  type: boolean
+    SavedSearchDeletedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - saved_search_id
+          properties:
+            saved_search_id:
+              type: string
+            search_name:
+              type: string
+    NotificationCreatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - notification_data
+          properties:
+            notification_data:
+              type: object
+              required:
+                - notification_id
+                - user_id
+                - type
+                - title
+                - message
+                - priority
+              properties:
+                notification_id:
+                  type: string
+                user_id:
+                  type: string
+                type:
+                  type: string
+                  enum:
+                    - inquiry
+                    - saved_search
+                    - property_update
+                    - system
+                    - marketing
+                title:
+                  type: string
+                message:
+                  type: string
+                related_property_id:
+                  type: string
+                  nullable: true
+                related_inquiry_id:
+                  type: string
+                  nullable: true
+                is_read:
+                  type: boolean
+                is_email_sent:
+                  type: boolean
+                email_sent_at:
+                  type: string
+                  nullable: true
+                action_url:
+                  type: string
+                  nullable: true
+                priority:
+                  type: string
+                  enum:
+                    - low
+                    - normal
+                    - high
+                expires_at:
+                  type: string
+                  nullable: true
+                created_at:
+                  type: string
+    NotificationReadEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - notification_id
+            - read_at
+          properties:
+            notification_id:
+              type: string
+            read_at:
+              type: string
+    NotificationDeletedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - notification_id
+          properties:
+            notification_id:
+              type: string
+    NotificationCountUpdatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - unread_count
+            - total_count
+          properties:
+            unread_count:
+              type: integer
+            total_count:
+              type: integer
+            unread_inquiry_count:
+              type: integer
+            unread_system_count:
+              type: integer
+    PropertyViewedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - view_data
+          properties:
+            view_data:
+              type: object
+              required:
+                - view_id
+                - property_id
+              properties:
+                view_id:
+                  type: string
+                property_id:
+                  type: string
+                user_id:
+                  type: string
+                  nullable: true
+                session_id:
+                  type: string
+                  nullable: true
+                ip_address:
+                  type: string
+                  nullable: true
+                user_agent:
+                  type: string
+                  nullable: true
+                referrer_url:
+                  type: string
+                  nullable: true
+                view_duration_seconds:
+                  type: integer
+                  nullable: true
+                created_at:
+                  type: string
+    UserActivityTrackedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - activity_type
+            - activity_data
+          properties:
+            activity_type:
+              type: string
+              enum:
+                - page_view
+                - search
+                - click
+                - scroll
+                - session_start
+                - session_end
+            activity_data:
+              type: object
+              properties:
+                page_url:
+                  type: string
+                  nullable: true
+                page_title:
+                  type: string
+                  nullable: true
+                session_id:
+                  type: string
+                  nullable: true
+                duration_seconds:
+                  type: integer
+                  nullable: true
+                additional_data:
+                  type: string
+                  nullable: true
+    SearchPerformedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - search_criteria
+            - results_count
+          properties:
+            search_criteria:
+              type: object
+              properties:
+                country:
+                  type: string
+                  nullable: true
+                property_type:
+                  type: string
+                  nullable: true
+                  enum:
+                    - villa
+                    - cabin
+                    - condominium
+                    - farm
+                    - land
+                    - mansion
+                    - house
+                    - apartment
+                    - commercial
+                price_min:
+                  type: number
+                  nullable: true
+                price_max:
+                  type: number
+                  nullable: true
+                bedrooms_min:
+                  type: integer
+                  nullable: true
+                bathrooms_min:
+                  type: integer
+                  nullable: true
+                square_footage_min:
+                  type: number
+                  nullable: true
+                square_footage_max:
+                  type: number
+                  nullable: true
+                land_size_min:
+                  type: number
+                  nullable: true
+                land_size_max:
+                  type: number
+                  nullable: true
+                natural_features:
+                  type: string
+                  nullable: true
+                outdoor_amenities:
+                  type: string
+                  nullable: true
+                location_text:
+                  type: string
+                  nullable: true
+                sort_by:
+                  type: string
+                  nullable: true
+            results_count:
+              type: integer
+            session_id:
+              type: string
+              nullable: true
+    AnalyticsUpdatedEvent:
+      allOf:
+        - $ref: "#/components/schemas/BaseEvent"
+        - type: object
+          required:
+            - analytics_type
+            - analytics_data
+          properties:
+            analytics_type:
+              type: string
+              enum:
+                - property_analytics
+                - user_analytics
+                - search_analytics
+                - system_analytics
+            analytics_data:
+              type: object
+              properties:
+                property_id:
+                  type: string
+                  nullable: true
+                date:
+                  type: string
+                  nullable: true
+                views_count:
+                  type: integer
+                  nullable: true
+                inquiries_count:
+                  type: integer
+                  nullable: true
+                favorites_count:
+                  type: integer
+                  nullable: true
+                shares_count:
+                  type: integer
+                  nullable: true
+                search_impressions:
+                  type: integer
+                  nullable: true
+                additional_metrics:
+                  type: string
+                  nullable: true

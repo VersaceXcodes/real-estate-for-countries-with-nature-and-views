@@ -1,0 +1,21 @@
+{
+  "timestamp": 1754508135231,
+  "operation": {
+    "id": "settings:config:package"
+  },
+  "projectId": "real-estate-for-countries-with-nature-and-views",
+  "files": [
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/backend/package.json",
+      "type": "text",
+      "size": 1425,
+      "dependencies": true
+    },
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/backend/.env",
+      "type": "text",
+      "size": 538,
+      "dependencies": false
+    }
+  ]
+}

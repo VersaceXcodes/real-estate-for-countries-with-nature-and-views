@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754508506392,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_MobileNav",
+      "version": "latest"
+    }
+  },
+  "projectId": "real-estate-for-countries-with-nature-and-views",
+  "files": [
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/vitereact/src/components/views/GV_MobileNav.tsx",
+      "type": "text",
+      "size": 18170,
+      "dependencies": false
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "timestamp": 1754508362926,
+  "operation": {
+    "id": "backend:tests:main"
+  },
+  "projectId": "real-estate-for-countries-with-nature-and-views",
+  "files": [
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/backend/server.test.js",
+      "type": "text",
+      "size": 63475,
+      "dependencies": false
+    },
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/backend/jest.config.js",
+      "type": "text",
+      "size": 826,
+      "dependencies": false
+    }
+  ]
+}

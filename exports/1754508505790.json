@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754508505790,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_Login",
+      "version": "latest"
+    }
+  },
+  "projectId": "real-estate-for-countries-with-nature-and-views",
+  "files": [
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/vitereact/src/components/views/UV_Login.tsx",
+      "type": "text",
+      "size": 14517,
+      "dependencies": false
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754508561301,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_InquiryManagement",
+      "version": "1754508414611"
+    }
+  },
+  "projectId": "real-estate-for-countries-with-nature-and-views",
+  "files": [
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/vitereact/src/components/views/UV_InquiryManagement.tsx",
+      "type": "text",
+      "size": 37871,
+      "dependencies": false
+    }
+  ]
+}

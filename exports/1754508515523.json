@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754508515523,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_Footer",
+      "version": "latest"
+    }
+  },
+  "projectId": "real-estate-for-countries-with-nature-and-views",
+  "files": [
+    {
+      "path": "../../apps/real-estate-for-countries-with-nature-and-views/vitereact/src/components/views/GV_Footer.tsx",
+      "type": "text",
+      "size": 16282,
+      "dependencies": false
+    }
+  ]
+}
