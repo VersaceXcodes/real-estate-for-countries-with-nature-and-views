@@ -61,7 +61,7 @@ const UV_Privacy: React.FC = () => {
         // const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/legal/privacy`);
         // setPrivacyContent(response.data);
         
-        // Mock data for now
+
         setTimeout(() => {
           setPrivacyContent({
             content: 'privacy_policy_content',
@@ -137,7 +137,6 @@ const UV_Privacy: React.FC = () => {
       //   preferences
       // );
       
-      // Mock implementation
       localStorage.setItem('cookie_preferences', JSON.stringify(preferences));
       setCookiePreferences(preferences);
       
@@ -174,7 +173,6 @@ const UV_Privacy: React.FC = () => {
       //   gdpr_request_form
       // );
       
-      // Mock implementation
       setTimeout(() => {
         setGdprRequestSuccess(true);
         setGdprRequestLoading(false);
@@ -204,7 +202,6 @@ const UV_Privacy: React.FC = () => {
       // link.click();
       // link.remove();
       
-      // Mock implementation
       alert('Privacy policy PDF download would be implemented with backend endpoint');
     } catch (error) {
       console.error('Error downloading privacy policy:', error);

@@ -172,7 +172,7 @@ const UV_ProfileSettings: React.FC = () => {
             inquiry_notifications: parsed.inquiry_notifications ?? true,
             marketing_emails: parsed.marketing_emails ?? false,
           });
-        } catch (error) {
+        } catch {
           console.warn('Failed to parse notification preferences');
         }
       }
@@ -182,7 +182,7 @@ const UV_ProfileSettings: React.FC = () => {
         try {
           const parsed = JSON.parse(userData.countries_of_interest);
           setSelectedCountries(parsed || []);
-        } catch (error) {
+        } catch {
           console.warn('Failed to parse countries of interest');
         }
       }
@@ -231,7 +231,7 @@ const UV_ProfileSettings: React.FC = () => {
       errors.email = 'Please enter a valid email address';
     }
     
-    if (profileForm.phone && !/^\+?[\d\s\-\(\)]+$/.test(profileForm.phone)) {
+    if (profileForm.phone && !/^\+?[\d\s\-()]+$/.test(profileForm.phone)) {
       errors.phone = 'Please enter a valid phone number';
     }
     

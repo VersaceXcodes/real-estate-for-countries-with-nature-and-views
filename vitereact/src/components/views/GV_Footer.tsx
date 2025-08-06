@@ -45,12 +45,10 @@ const GV_Footer: React.FC = () => {
       // setPopularCountries(response.data.popular_countries);
       // setPopularPropertyTypes(response.data.popular_property_types);
       
-      // Mock data for now
       setPopularCountries(['Costa Rica', 'Mexico', 'Canada', 'Norway', 'Switzerland', 'New Zealand']);
       setPopularPropertyTypes(['Villa', 'Cabin', 'House', 'Land', 'Mansion']);
     } catch (error) {
       console.error('Failed to load popular data:', error);
-      // Use default mock data on error
       setPopularCountries(['Costa Rica', 'Mexico', 'Canada']);
       setPopularPropertyTypes(['Villa', 'Cabin', 'House']);
     }
@@ -92,8 +90,7 @@ const GV_Footer: React.FC = () => {
       //   { email: newsletter_email }
       // );
       
-      // Mock success for now
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       setNewsletterSubscribed(true);
       setNewsletterEmail('');

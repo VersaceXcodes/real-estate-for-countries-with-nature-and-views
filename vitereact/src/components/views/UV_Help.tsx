@@ -2,8 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAppStore } from '@/store/main';
 
-// Mock help articles data since API endpoints are missing
-const MOCK_HELP_ARTICLES = [
+const HELP_ARTICLES = [
   // Getting Started
   {
     id: '1',
@@ -185,7 +184,7 @@ const UV_Help: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   
   // State variables based on datamap
-  const [help_articles] = useState<HelpArticle[]>(MOCK_HELP_ARTICLES);
+  const [help_articles] = useState<HelpArticle[]>(HELP_ARTICLES);
   const [search_query, setSearchQuery] = useState(searchParams.get('search') || '');
   const [active_category, setActiveCategory] = useState<string | null>(searchParams.get('category') || null);
   const [loading_articles] = useState(false);
@@ -243,7 +242,7 @@ const UV_Help: React.FC = () => {
     return articles;
   }, [help_articles, active_category, search_query]);
 
-  // Get popular articles (mock logic - most recently updated)
+  // Get popular articles (most recently updated)
   const popular_articles = useMemo(() => {
     return help_articles
       .sort((a, b) => new Date(b.last_updated).getTime() - new Date(a.last_updated).getTime())

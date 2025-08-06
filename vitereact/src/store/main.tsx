@@ -229,7 +229,7 @@ export const useAppStore = create<AppState>()(
 
           const { user, token } = response.data;
 
-          set((_) => ({
+          set(() => ({
             authentication_state: {
               current_user: user,
               auth_token: token,
@@ -243,7 +243,7 @@ export const useAppStore = create<AppState>()(
         } catch (error: any) {
           const errorMessage = error.response?.data?.message || error.message || 'Login failed';
           
-          set((_) => ({
+          set(() => ({
             authentication_state: {
               current_user: null,
               auth_token: null,
@@ -274,7 +274,7 @@ export const useAppStore = create<AppState>()(
           }
         }
 
-        set((_) => ({
+        set(() => ({
           authentication_state: {
             current_user: null,
             auth_token: null,
@@ -319,7 +319,7 @@ export const useAppStore = create<AppState>()(
 
           const { user, token } = response.data;
 
-          set((_) => ({
+          set(() => ({
             authentication_state: {
               current_user: user,
               auth_token: token,
@@ -333,7 +333,7 @@ export const useAppStore = create<AppState>()(
         } catch (error: any) {
           const errorMessage = error.response?.data?.message || error.message || 'Registration failed';
           
-          set((_) => ({
+          set(() => ({
             authentication_state: {
               current_user: null,
               auth_token: null,
@@ -353,7 +353,7 @@ export const useAppStore = create<AppState>()(
         const token = authentication_state.auth_token;
         
         if (!token) {
-          set((_) => ({
+          set(() => ({
             authentication_state: {
               current_user: null,
               auth_token: null,
@@ -375,7 +375,7 @@ export const useAppStore = create<AppState>()(
 
           const user = response.data;
           
-          set((_) => ({
+          set(() => ({
             authentication_state: {
               current_user: user,
               auth_token: token,
@@ -386,9 +386,9 @@ export const useAppStore = create<AppState>()(
               error_message: null,
             },
           }));
-        } catch (error) {
+        } catch {
           // Token is invalid, clear auth state
-          set((_) => ({
+          set(() => ({
             authentication_state: {
               current_user: null,
               auth_token: null,
@@ -403,7 +403,7 @@ export const useAppStore = create<AppState>()(
       },
 
       clear_auth_error: () => {
-        set((_) => ({
+        set(() => ({
           authentication_state: {
             current_user: null,
             auth_token: null,

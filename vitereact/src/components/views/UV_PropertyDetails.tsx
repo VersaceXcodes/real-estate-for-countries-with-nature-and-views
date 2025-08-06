@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -117,7 +117,7 @@ const UV_PropertyDetails: React.FC = () => {
     return data.sort((a: PropertyPhoto, b: PropertyPhoto) => a.photo_order - b.photo_order);
   };
 
-  const trackPropertyView = async (propertyId: string) => {
+  const trackPropertyView = useCallback(async (propertyId: string) => {
     await axios.post(
       `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/properties/${propertyId}/view`,
       {
@@ -129,7 +129,7 @@ const UV_PropertyDetails: React.FC = () => {
         view_duration_seconds: null
       }
     );
-  };
+  }, [currentUser?.user_id]);
 
   const submitInquiry = async (data: any) => {
     const { data: response } = await axios.post(
@@ -226,7 +226,7 @@ const UV_PropertyDetails: React.FC = () => {
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [property_id]);
+  }, [property_id, trackPropertyView]);
 
   // Handle form submission
   const handleInquirySubmit = (e: React.FormEvent) => {

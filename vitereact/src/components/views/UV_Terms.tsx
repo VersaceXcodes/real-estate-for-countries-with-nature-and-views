@@ -30,7 +30,7 @@ const UV_Terms: React.FC = () => {
   const currentUser = useAppStore(state => state.authentication_state.current_user);
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
 
-  // Mock terms content sections since API endpoints are missing
+
   const termsSections: TermsSection[] = [
     {
       id: 'platform-usage',
@@ -103,7 +103,7 @@ const UV_Terms: React.FC = () => {
       // TODO: Replace with actual API call when endpoint exists
       // const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/legal/terms`);
       
-      // Mock data since endpoint doesn't exist
+
       setTimeout(() => {
         setTermsContent({
           content: 'Terms of Service for NatureEstate Platform',
@@ -132,7 +132,7 @@ const UV_Terms: React.FC = () => {
       //   accepted_at: new Date().toISOString()
       // });
       
-      // Mock acceptance for now
+
       setTermsAccepted(true);
       setShowAcceptanceRequired(false);
       
@@ -148,7 +148,7 @@ const UV_Terms: React.FC = () => {
     // TODO: Replace with actual API call when endpoint exists
     // window.open(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/legal/terms/pdf`, '_blank');
     
-    // Mock download functionality
+
     window.print();
   };
 

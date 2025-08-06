@@ -319,7 +319,7 @@ const UV_CreateListing: React.FC = () => {
   };
   
   // Photo handlers
-  const handleFileSelect = (files: FileList) => {
+  const handleFileSelect = useCallback((files: FileList) => {
     const newPhotos: UploadedPhoto[] = [];
     
     for (let i = 0; i < files.length; i++) {
@@ -340,7 +340,7 @@ const UV_CreateListing: React.FC = () => {
     }
     
     setUploadedPhotos(prev => [...prev, ...newPhotos]);
-  };
+  }, [uploadedPhotos.length]);
   
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -349,7 +349,7 @@ const UV_CreateListing: React.FC = () => {
     if (e.dataTransfer.files) {
       handleFileSelect(e.dataTransfer.files);
     }
-  }, [uploadedPhotos.length]);
+  }, [handleFileSelect]);
   
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();

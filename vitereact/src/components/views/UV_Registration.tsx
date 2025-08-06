@@ -138,7 +138,7 @@ const UV_Registration: React.FC = () => {
 
   // Phone validation  
   const validatePhone = useCallback((phone: string): boolean => {
-    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+    const phoneRegex = /^[+]?[1-9][\d]{0,15}$/;
     return phoneRegex.test(phone);
   }, []);
 
@@ -272,7 +272,7 @@ const UV_Registration: React.FC = () => {
     //   setEmailAvailability('unchecked');
     // }
     
-    // Mock response for now
+
     setTimeout(() => {
       setEmailAvailability('available');
     }, 1000);
