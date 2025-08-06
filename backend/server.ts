@@ -1,13 +1,22 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import fs from 'fs';
-import path from 'path';
+import * as dotenv from 'dotenv';
+import { existsSync, mkdirSync } from 'fs';
+import * as path from 'path';
 import { fileURLToPath } from 'url';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 import morgan from 'morgan';
 import { v4 as uuidv4 } from 'uuid';
 import multer from 'multer';
+
+// Extend Express Request type to include user property
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
+    }
+  }
+}
 
 // Import PostgreSQL
 import pkg from 'pg';
@@ -29,7 +38,7 @@ import {
   userSessionSchema, createUserSessionInputSchema, updateUserSessionInputSchema,
   propertyAnalyticsSchema, createPropertyAnalyticsInputSchema, searchPropertyAnalyticsInputSchema,
   inquiryResponseSchema, createInquiryResponseInputSchema, updateInquiryResponseInputSchema
-} from './schema.ts';
+} from './schema';
 
 // PostgreSQL setup
 const { DATABASE_URL, PGHOST, PGDATABASE, PGUSER, PGPASSWORD, PGPORT = 5432, JWT_SECRET = 'your-secret-key' } = process.env;
@@ -38,7 +47,7 @@ const pool = new Pool(
   DATABASE_URL
     ? { 
         connectionString: DATABASE_URL, 
-        ssl: { require: true } 
+        ssl: { rejectUnauthorized: false } 
       }
     : {
         host: PGHOST,
@@ -46,7 +55,7 @@ const pool = new Pool(
         user: PGUSER,
         password: PGPASSWORD,
         port: Number(PGPORT),
-        ssl: { require: true },
+        ssl: { rejectUnauthorized: false },
       }
 );
 
@@ -56,12 +65,12 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const port = process.env.PORT || 3000;
+const port = parseInt(process.env.PORT || '3000');
 
 // Create storage directory if it doesn't exist
 const storageDir = path.join(__dirname, 'storage');
-if (!fs.existsSync(storageDir)) {
-  fs.mkdirSync(storageDir, { recursive: true });
+if (!existsSync(storageDir)) {
+  mkdirSync(storageDir, { recursive: true });
 }
 
 // Middleware
@@ -115,7 +124,7 @@ const authenticateToken = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
     const client = await pool.connect();
     const result = await client.query(
       'SELECT user_id, email, name, user_type, profile_photo_url, is_verified, email_verified, created_at FROM users WHERE user_id = $1',
@@ -149,7 +158,7 @@ const optionalAuth = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
     const client = await pool.connect();
     const result = await client.query(
       'SELECT user_id, email, name, user_type, profile_photo_url, is_verified, email_verified, created_at FROM users WHERE user_id = $1',
@@ -246,7 +255,7 @@ async function createUserSession(userId, deviceInfo, ipAddress) {
 Utility function to create notifications
 Handles notification creation and optional email sending
 */
-async function createNotification(userId, type, title, message, options = {}) {
+async function createNotification(userId, type, title, message, options: any = {}) {
   const notificationId = uuidv4();
   const {
     relatedPropertyId = null,
@@ -1552,6 +1561,8 @@ app.get('/properties/:property_id/inquiries', authenticateToken, async (req, res
   try {
     const { property_id } = req.params;
     const { status, limit = 10, offset = 0 } = req.query;
+    const limitNum = parseInt(String(limit));
+    const offsetNum = parseInt(String(offset));
     
     const client = await pool.connect();
     
@@ -1583,12 +1594,12 @@ app.get('/properties/:property_id/inquiries', authenticateToken, async (req, res
     
     if (status) {
       query += ` AND i.status = $${paramCount}`;
-      values.push(status);
+      values.push(String(status));
       paramCount++;
     }
     
     query += ` ORDER BY i.created_at DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    values.push(parseInt(limit), parseInt(offset));
+    values.push(String(limitNum), String(offsetNum));
     
     const result = await client.query(query, values);
     
@@ -1597,7 +1608,7 @@ app.get('/properties/:property_id/inquiries', authenticateToken, async (req, res
     const countValues = [property_id];
     if (status) {
       countQuery += ' AND status = $2';
-      countValues.push(status);
+      countValues.push(String(status));
     }
     const countResult = await client.query(countQuery, countValues);
     
@@ -1606,8 +1617,8 @@ app.get('/properties/:property_id/inquiries', authenticateToken, async (req, res
     res.json({
       inquiries: result.rows,
       total_count: parseInt(countResult.rows[0].count),
-      page: Math.floor(parseInt(offset) / parseInt(limit)) + 1,
-      per_page: parseInt(limit)
+      page: Math.floor(offsetNum / limitNum) + 1,
+      per_page: limitNum
     });
     
   } catch (error) {
@@ -2004,6 +2015,8 @@ Returns user's favorited properties
 app.get('/saved-properties', authenticateToken, async (req, res) => {
   try {
     const { sort_by = 'date_saved', filter_country, view_type = 'grid', limit = 20, offset = 0 } = req.query;
+    const limitNum = parseInt(String(limit));
+    const offsetNum = parseInt(String(offset));
     
     const client = await pool.connect();
     
@@ -2039,7 +2052,7 @@ app.get('/saved-properties', authenticateToken, async (req, res) => {
     
     // Add pagination
     query += ` LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    values.push(parseInt(limit), parseInt(offset));
+    values.push(String(limitNum), String(offsetNum));
     
     const result = await client.query(query, values);
     client.release();
@@ -2528,6 +2541,7 @@ app.get('/dashboard/stats', authenticateToken, async (req, res) => {
       total_favorites: 0,
       active_listings: 0,
       pending_inquiries: 0,
+      saved_searches: 0,
       recent_activity: []
     };
     
@@ -2647,6 +2661,8 @@ app.get('/properties/:property_id/analytics', authenticateToken, async (req, res
   try {
     const { property_id } = req.params;
     const { date_from, date_to, limit = 30, offset = 0 } = req.query;
+    const limitNum = parseInt(String(limit));
+    const offsetNum = parseInt(String(offset));
     
     const client = await pool.connect();
     
@@ -2673,18 +2689,18 @@ app.get('/properties/:property_id/analytics', authenticateToken, async (req, res
     
     if (date_from) {
       query += ` AND date >= $${paramCount}`;
-      values.push(date_from);
+      values.push(String(date_from));
       paramCount++;
     }
     
     if (date_to) {
       query += ` AND date <= $${paramCount}`;
-      values.push(date_to);
+      values.push(String(date_to));
       paramCount++;
     }
     
     query += ` ORDER BY date DESC LIMIT $${paramCount} OFFSET $${paramCount + 1}`;
-    values.push(parseInt(limit), parseInt(offset));
+    values.push(String(limitNum), String(offsetNum));
     
     const result = await client.query(query, values);
     client.release();
@@ -2704,12 +2720,14 @@ Returns user's search history
 app.get('/search-history', authenticateToken, async (req, res) => {
   try {
     const { limit = 20, offset = 0 } = req.query;
+    const limitNum = parseInt(String(limit));
+    const offsetNum = parseInt(String(offset));
     
     const client = await pool.connect();
     
     const result = await client.query(
       'SELECT * FROM search_history WHERE user_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3',
-      [req.user.user_id, parseInt(limit), parseInt(offset)]
+      [req.user.user_id, limitNum, offsetNum]
     );
     
     client.release();
