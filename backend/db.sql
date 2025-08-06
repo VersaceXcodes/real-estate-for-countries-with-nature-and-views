@@ -1,5 +1,5 @@
 -- Create all tables
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     user_id TEXT PRIMARY KEY,
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE users (
     last_login_at TEXT
 );
 
-CREATE TABLE properties (
+CREATE TABLE IF NOT EXISTS properties (
     property_id TEXT PRIMARY KEY,
     user_id TEXT NOT NULL REFERENCES users(user_id),
     title TEXT NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE properties (
     expires_at TEXT
 );
 
-CREATE TABLE property_photos (
+CREATE TABLE IF NOT EXISTS property_photos (
     photo_id TEXT PRIMARY KEY,
     property_id TEXT NOT NULL REFERENCES properties(property_id),
     photo_url TEXT NOT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE property_photos (
     created_at TEXT NOT NULL
 );
 
-CREATE TABLE property_inquiries (
+CREATE TABLE IF NOT EXISTS property_inquiries (
     inquiry_id TEXT PRIMARY KEY,
     property_id TEXT NOT NULL REFERENCES properties(property_id),
     sender_user_id TEXT REFERENCES users(user_id),
@@ -92,7 +92,7 @@ CREATE TABLE property_inquiries (
     updated_at TEXT NOT NULL
 );
 
-CREATE TABLE saved_properties (
+CREATE TABLE IF NOT EXISTS saved_properties (
     saved_property_id TEXT PRIMARY KEY,
     user_id TEXT NOT NULL REFERENCES users(user_id),
     property_id TEXT NOT NULL REFERENCES properties(property_id),
@@ -100,7 +100,7 @@ CREATE TABLE saved_properties (
     created_at TEXT NOT NULL
 );
 
-CREATE TABLE saved_searches (
+CREATE TABLE IF NOT EXISTS saved_searches (
     saved_search_id TEXT PRIMARY KEY,
     user_id TEXT NOT NULL REFERENCES users(user_id),
     search_name TEXT NOT NULL,
@@ -124,7 +124,7 @@ CREATE TABLE saved_searches (
     updated_at TEXT NOT NULL
 );
 
-CREATE TABLE search_history (
+CREATE TABLE IF NOT EXISTS search_history (
     search_history_id TEXT PRIMARY KEY,
     user_id TEXT REFERENCES users(user_id),
     session_id TEXT,
@@ -146,7 +146,7 @@ CREATE TABLE search_history (
     created_at TEXT NOT NULL
 );
 
-CREATE TABLE notifications (
+CREATE TABLE IF NOT EXISTS notifications (
     notification_id TEXT PRIMARY KEY,
     user_id TEXT NOT NULL REFERENCES users(user_id),
     type TEXT NOT NULL,
@@ -163,7 +163,7 @@ CREATE TABLE notifications (
     created_at TEXT NOT NULL
 );
 
-CREATE TABLE property_views (
+CREATE TABLE IF NOT EXISTS property_views (
     view_id TEXT PRIMARY KEY,
     property_id TEXT NOT NULL REFERENCES properties(property_id),
     user_id TEXT REFERENCES users(user_id),
@@ -175,7 +175,7 @@ CREATE TABLE property_views (
     created_at TEXT NOT NULL
 );
 
-CREATE TABLE user_sessions (
+CREATE TABLE IF NOT EXISTS user_sessions (
     session_id TEXT PRIMARY KEY,
     user_id TEXT NOT NULL REFERENCES users(user_id),
     jwt_token TEXT NOT NULL,
@@ -188,7 +188,7 @@ CREATE TABLE user_sessions (
     last_activity_at TEXT NOT NULL
 );
 
-CREATE TABLE property_analytics (
+CREATE TABLE IF NOT EXISTS property_analytics (
     analytics_id TEXT PRIMARY KEY,
     property_id TEXT NOT NULL REFERENCES properties(property_id),
     date TEXT NOT NULL,
@@ -200,7 +200,7 @@ CREATE TABLE property_analytics (
     created_at TEXT NOT NULL
 );
 
-CREATE TABLE inquiry_responses (
+CREATE TABLE IF NOT EXISTS inquiry_responses (
     response_id TEXT PRIMARY KEY,
     inquiry_id TEXT NOT NULL REFERENCES property_inquiries(inquiry_id),
     sender_user_id TEXT NOT NULL REFERENCES users(user_id),
@@ -210,7 +210,7 @@ CREATE TABLE inquiry_responses (
     created_at TEXT NOT NULL
 );
 
-CREATE TABLE system_settings (
+CREATE TABLE IF NOT EXISTS system_settings (
     setting_id TEXT PRIMARY KEY,
     setting_key TEXT UNIQUE NOT NULL,
     setting_value TEXT NOT NULL,

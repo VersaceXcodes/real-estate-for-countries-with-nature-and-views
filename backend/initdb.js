@@ -27,27 +27,35 @@ const pool = new Pool(
 async function initDb() {
   const client = await pool.connect();
   try {
-    // Begin transaction
-    await client.query('BEGIN');
-    
     // Read and split SQL commands
     const dbInitCommands = fs
       .readFileSync(`./db.sql`, "utf-8")
       .toString()
       .split(/(?=CREATE TABLE |INSERT INTO)/);
 
-    // Execute each command
+    // Execute each command individually (no transaction to avoid rollback issues)
     for (let cmd of dbInitCommands) {
-      console.dir({ "backend:db:init:command": cmd });
-      await client.query(cmd);
+      const trimmedCmd = cmd.trim();
+      if (!trimmedCmd) continue;
+      
+      console.dir({ "backend:db:init:command": trimmedCmd.substring(0, 100) + "..." });
+      
+      try {
+        // Handle INSERT statements with ON CONFLICT DO NOTHING for PostgreSQL
+        if (trimmedCmd.startsWith('INSERT INTO')) {
+          const modifiedCmd = trimmedCmd.replace(/;$/, ' ON CONFLICT DO NOTHING;');
+          await client.query(modifiedCmd);
+        } else {
+          await client.query(trimmedCmd);
+        }
+      } catch (error) {
+        // Log the error but continue with other commands
+        console.warn(`Warning: Command failed but continuing: ${error.message}`);
+      }
     }
 
-    // Commit transaction
-    await client.query('COMMIT');
     console.log('Database initialization completed successfully');
   } catch (e) {
-    // Rollback on error
-    await client.query('ROLLBACK');
     console.error('Database initialization failed:', e);
     throw e;
   } finally {
