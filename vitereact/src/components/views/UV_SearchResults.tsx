@@ -193,7 +193,7 @@ const UV_SearchResults: React.FC = () => {
 
   const savePropertyMutation = useMutation({
     mutationFn: saveProperty,
-    onSuccess: (data, variables) => {
+    onSuccess: (_, variables) => {
       addSavedProperty(variables.property_id);
       queryClient.invalidateQueries({ queryKey: ['saved-properties'] });
     },
@@ -411,15 +411,18 @@ const UV_SearchResults: React.FC = () => {
                   <h4 className="text-sm font-medium text-gray-700 mb-2">Property Type</h4>
                   <select
                     value={activeCriteria.property_type || ''}
-                    onChange={(e) => updateFilters({ property_type: e.target.value || undefined })}
+                    onChange={(e) => updateFilters({ property_type: (e.target.value as 'villa' | 'cabin' | 'condominium' | 'farm' | 'land' | 'mansion' | 'house' | 'apartment' | 'commercial') || undefined })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
                   >
                     <option value="">All Types</option>
                     <option value="villa">Villa</option>
                     <option value="cabin">Cabin</option>
+                    <option value="condominium">Condominium</option>
+                    <option value="farm">Farm</option>
+                    <option value="land">Land</option>
+                    <option value="mansion">Mansion</option>
                     <option value="house">House</option>
                     <option value="apartment">Apartment</option>
-                    <option value="land">Land</option>
                     <option value="commercial">Commercial</option>
                   </select>
                 </div>

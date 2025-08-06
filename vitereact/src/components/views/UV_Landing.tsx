@@ -44,7 +44,7 @@ const UV_Landing: React.FC = () => {
   
   // Individual Zustand selectors to prevent infinite loops
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+
   const addSavedProperty = useAppStore(state => state.add_saved_property);
   const savedPropertyIds = useAppStore(state => state.saved_properties_state.saved_property_ids);
 

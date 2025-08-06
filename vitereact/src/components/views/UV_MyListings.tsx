@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -27,17 +27,7 @@ interface Property {
   updated_at: string;
 }
 
-interface PropertyAnalytics {
-  analytics_id: string;
-  property_id: string;
-  date: string;
-  views_count: number;
-  inquiries_count: number;
-  favorites_count: number;
-  shares_count: number;
-  search_impressions: number;
-  created_at: string;
-}
+
 
 interface PropertySearchResponse {
   properties: Property[];
@@ -77,7 +67,7 @@ const UV_MyListings: React.FC = () => {
 
   const [selectedPropertyIds, setSelectedPropertyIds] = useState<string[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [showAnalytics, setShowAnalytics] = useState(false);
+
 
   const queryClient = useQueryClient();
 
@@ -117,27 +107,7 @@ const UV_MyListings: React.FC = () => {
     enabled: !!currentUser?.user_id && !!authToken
   });
 
-  // Fetch property analytics
-  const fetchPropertyAnalytics = async (propertyId: string): Promise<PropertyAnalytics[]> => {
-    if (!authToken) throw new Error('User not authenticated');
 
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
-    const params = new URLSearchParams({
-      date_from: thirtyDaysAgo.toISOString().split('T')[0],
-      date_to: new Date().toISOString().split('T')[0],
-      limit: '30'
-    });
-
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/properties/${propertyId}/analytics?${params.toString()}`,
-      {
-        headers: { Authorization: `Bearer ${authToken}` }
-      }
-    );
-    return data;
-  };
 
   // Update property status mutation
   const updatePropertyStatusMutation = useMutation({
@@ -228,14 +198,7 @@ const UV_MyListings: React.FC = () => {
     }).format(price);
   };
 
-  // Format date
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+
 
   // Days on market calculation
   const getDaysOnMarket = (createdAt: string) => {

@@ -62,7 +62,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 // Protected route wrapper for specific user types
 const UserTypeProtectedRoute: React.FC<{ 
   children: React.ReactNode; 
-  allowedTypes: ('buyer' | 'seller' | 'agent')[] 
+  allowedTypes: ('buyer' | 'seller' | 'agent' | 'admin')[] 
 }> = ({ children, allowedTypes }) => {
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
   const isLoading = useAppStore(state => state.authentication_state.authentication_status.is_loading);

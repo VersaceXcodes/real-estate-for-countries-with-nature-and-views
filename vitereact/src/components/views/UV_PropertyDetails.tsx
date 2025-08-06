@@ -149,7 +149,7 @@ const UV_PropertyDetails: React.FC = () => {
       // Find and remove - would need saved property ID, for now just remove from local state
       removeSavedProperty(propertyId);
     } else {
-      const { data } = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/saved-properties`,
         {
           property_id: propertyId,

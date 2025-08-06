@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
@@ -95,7 +95,7 @@ const UV_PasswordReset: React.FC = () => {
   // Mutation for password reset request
   const resetRequestMutation = useMutation<SuccessResponse, Error, ForgotPasswordRequest>({
     mutationFn: requestPasswordReset,
-    onSuccess: (data) => {
+    onSuccess: () => {
       setResetRequested(true);
       setFormErrors({});
     },
@@ -108,7 +108,7 @@ const UV_PasswordReset: React.FC = () => {
   // Mutation for password reset completion
   const resetCompleteMutation = useMutation<SuccessResponse, Error, ResetPasswordRequest>({
     mutationFn: completePasswordReset,
-    onSuccess: (data) => {
+    onSuccess: () => {
       setPasswordUpdated(true);
       setFormErrors({});
     },

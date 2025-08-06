@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
@@ -56,10 +56,10 @@ const COUNTRIES_OPTIONS = [
 ];
 
 const UV_Registration: React.FC = () => {
-  const navigate = useNavigate();
+
   
   // Zustand store selectors - individual selectors to avoid infinite loops
-  const isLoading = useAppStore(state => state.authentication_state.authentication_status.is_loading);
+
   const authError = useAppStore(state => state.authentication_state.error_message);
   const clearAuthError = useAppStore(state => state.clear_auth_error);
 
@@ -102,7 +102,7 @@ const UV_Registration: React.FC = () => {
       );
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       setRegistrationSuccess(true);
       // Could update global auth state here if needed
       clearAuthError();

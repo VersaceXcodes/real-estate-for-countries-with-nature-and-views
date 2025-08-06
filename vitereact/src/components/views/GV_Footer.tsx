@@ -8,9 +8,7 @@ interface ContactInfo {
   address: string;
 }
 
-interface NewsletterFormData {
-  email: string;
-}
+
 
 const GV_Footer: React.FC = () => {
   // Newsletter form state

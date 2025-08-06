@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -56,7 +56,7 @@ const UV_SavedProperties: React.FC = () => {
   const queryClient = useQueryClient();
 
   // Auth state from Zustand store
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+
   const authToken = useAppStore(state => state.authentication_state.auth_token);
 
   // Local state

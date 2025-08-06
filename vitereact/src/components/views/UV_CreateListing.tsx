@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
@@ -112,7 +112,6 @@ interface UploadedPhoto {
 }
 
 const UV_CreateListing: React.FC = () => {
-  const navigate = useNavigate();
   
   // Zustand store selectors (individual to avoid infinite loops)
   const currentUser = useAppStore(state => state.authentication_state.current_user);
