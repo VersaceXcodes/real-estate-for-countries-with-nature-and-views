@@ -27,27 +27,65 @@ const pool = new Pool(
 async function initDb() {
   const client = await pool.connect();
   try {
-    // Read and split SQL commands
-    const dbInitCommands = fs
-      .readFileSync(`./db.sql`, "utf-8")
-      .toString()
-      .split(/(?=CREATE TABLE |INSERT INTO)/);
-
-    // Execute each command individually (no transaction to avoid rollback issues)
-    for (let cmd of dbInitCommands) {
-      const trimmedCmd = cmd.trim();
-      if (!trimmedCmd) continue;
+    // Read SQL file content
+    const sqlContent = fs.readFileSync(`./db.sql`, "utf-8").toString();
+    
+    // Split SQL content into logical blocks (CREATE TABLE and INSERT INTO blocks)
+    const blocks = [];
+    const lines = sqlContent.split('\n');
+    let currentBlock = '';
+    let inInsertStatement = false;
+    
+    for (let line of lines) {
+      const trimmedLine = line.trim();
       
-      console.dir({ "backend:db:init:command": trimmedCmd.substring(0, 100) + "..." });
+      // Skip empty lines and comments
+      if (!trimmedLine || trimmedLine.startsWith('--')) {
+        continue;
+      }
+      
+      // Start of a new CREATE TABLE or INSERT INTO block
+      if (trimmedLine.startsWith('CREATE TABLE') || trimmedLine.startsWith('INSERT INTO')) {
+        // Save previous block if it exists
+        if (currentBlock.trim()) {
+          blocks.push(currentBlock.trim());
+        }
+        currentBlock = line;
+        inInsertStatement = trimmedLine.startsWith('INSERT INTO');
+      } else {
+        // Continue building current block
+        currentBlock += '\n' + line;
+      }
+      
+      // End of INSERT statement (ends with semicolon and not inside quotes)
+      if (inInsertStatement && trimmedLine.endsWith(';') && !trimmedLine.includes("'")) {
+        blocks.push(currentBlock.trim());
+        currentBlock = '';
+        inInsertStatement = false;
+      }
+    }
+    
+    // Add the last block if it exists
+    if (currentBlock.trim()) {
+      blocks.push(currentBlock.trim());
+    }
+
+    // Execute each block individually
+    for (let block of blocks) {
+      if (!block) continue;
+      
+      console.dir({ "backend:db:init:command": block.substring(0, 100) + "..." });
       
       try {
         // Handle INSERT statements with ON CONFLICT DO NOTHING for PostgreSQL
-        if (trimmedCmd.startsWith('INSERT INTO')) {
-          const modifiedCmd = trimmedCmd.replace(/;$/, ' ON CONFLICT DO NOTHING;');
-          await client.query(modifiedCmd);
-        } else {
-          await client.query(trimmedCmd);
+        if (block.toUpperCase().startsWith('INSERT INTO')) {
+          // Add ON CONFLICT DO NOTHING if not already present
+          if (!block.toUpperCase().includes('ON CONFLICT')) {
+            block = block.replace(/;$/, ' ON CONFLICT DO NOTHING;');
+          }
         }
+        
+        await client.query(block);
       } catch (error) {
         // Log the error but continue with other commands
         console.warn(`Warning: Command failed but continuing: ${error.message}`);
