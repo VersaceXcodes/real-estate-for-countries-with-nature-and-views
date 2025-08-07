@@ -81,8 +81,8 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(morgan('combined'));
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files from the Vite build directory
+app.use(express.static(path.join(__dirname, '../vitereact/dist')));
 
 // Serve storage files
 app.use('/storage', express.static(storageDir));
@@ -2804,13 +2804,6 @@ app.use((error, req, res, next) => {
   res.status(500).json({ success: false, message: 'Internal server error' });
 });
 
-/*
-404 handler for undefined routes
-*/
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: 'Route not found' });
-});
-
 // ==================== DEFAULT ROUTES ====================
 
 /*
@@ -2826,9 +2819,9 @@ app.get('/', (req, res) => {
   });
 });
 
-// Catch-all route for SPA routing
+// Catch-all route for SPA routing (must be last)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, '../vitereact/dist', 'index.html'));
 });
 
 // Export for testing
