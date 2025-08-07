@@ -1,197 +1,291 @@
 {
   "generated_at": "2025-01-08T10:30:00Z",
-  "application_name": "NatureEstate - Real Estate Platform",
-  "description": "A comprehensive real estate platform specializing in scenic properties with natural beauty and breathtaking views",
-  "tech_stack": [
-    "React 18.3.1",
-    "TypeScript 5.5.3", 
-    "Vite 5.4.0",
-    "Node.js",
-    "Express 4.19.2",
-    "PostgreSQL",
-    "Tailwind CSS 3.4.8",
-    "Zustand (State Management)",
-    "React Query (TanStack Query)",
-    "React Router DOM 6.26.0",
-    "Radix UI Components",
-    "Zod (Schema Validation)",
-    "JWT Authentication",
-    "Axios (HTTP Client)"
-  ],
+  "project_name": "NatureEstate - Real Estate Platform",
+  "description": "A comprehensive real estate platform specializing in properties with natural features and scenic views across Central America and the Caribbean",
+  "tech_stack": {
+    "frontend": [
+      "React 18.3.1",
+      "TypeScript 5.5.3",
+      "Vite 5.4.0",
+      "Tailwind CSS 3.4.8",
+      "Radix UI Components",
+      "React Router DOM 6.26.0",
+      "Zustand (State Management)",
+      "React Query (TanStack Query)",
+      "Framer Motion",
+      "Axios"
+    ],
+    "backend": [
+      "Node.js",
+      "Express.js",
+      "TypeScript",
+      "PostgreSQL",
+      "JWT Authentication",
+      "Zod Validation",
+      "Multer (File Uploads)",
+      "Morgan (Logging)",
+      "CORS"
+    ],
+    "deployment": [
+      "Vite Build System",
+      "Static File Serving",
+      "Environment Variables",
+      "Docker Support"
+    ]
+  },
   "architecture": {
-    "frontend": {
-      "framework": "React with Vite",
-      "state_management": "Zustand with persistence",
-      "routing": "React Router DOM",
-      "styling": "Tailwind CSS with Radix UI components",
-      "data_fetching": "React Query with Axios"
-    },
-    "backend": {
-      "framework": "Express.js",
-      "database": "PostgreSQL with pg driver",
-      "authentication": "JWT tokens with refresh tokens",
-      "validation": "Zod schemas",
-      "file_uploads": "Multer middleware"
+    "pattern": "Full-Stack SPA with REST API",
+    "frontend_structure": "Component-based React with centralized state management",
+    "backend_structure": "Express REST API with PostgreSQL database",
+    "authentication": "JWT-based with refresh tokens and session management",
+    "file_structure": {
+      "frontend": "/vitereact/src/",
+      "backend": "/backend/",
+      "components": "/vitereact/src/components/",
+      "views": "/vitereact/src/components/views/",
+      "store": "/vitereact/src/store/",
+      "api_endpoints": "/backend/server.ts"
     }
   },
-  "features": [
+  "key_features": [
     {
       "name": "User Authentication System",
       "description": "Complete authentication with registration, login, password reset, email verification",
       "files": [
         "vitereact/src/components/views/UV_Login.tsx",
-        "vitereact/src/components/views/UV_Registration.tsx", 
+        "vitereact/src/components/views/UV_Registration.tsx",
         "vitereact/src/components/views/UV_PasswordReset.tsx",
+        "vitereact/src/store/main.tsx",
         "backend/server.ts (auth routes)"
       ],
-      "endpoints": ["/auth/register", "/auth/login", "/auth/logout", "/auth/forgot-password", "/auth/reset-password", "/auth/verify-email"]
+      "endpoints": [
+        "POST /auth/register",
+        "POST /auth/login",
+        "POST /auth/logout",
+        "POST /auth/forgot-password",
+        "POST /auth/reset-password",
+        "POST /auth/verify-email",
+        "POST /auth/refresh-token"
+      ]
     },
     {
-      "name": "Property Management",
-      "description": "Full CRUD operations for property listings with photos, search, and filtering",
+      "name": "Property Management System",
+      "description": "Comprehensive property listings with photos, search, and detailed views",
       "files": [
         "vitereact/src/components/views/UV_CreateListing.tsx",
         "vitereact/src/components/views/UV_MyListings.tsx",
         "vitereact/src/components/views/UV_PropertyDetails.tsx",
         "vitereact/src/components/views/UV_SearchResults.tsx"
       ],
-      "endpoints": ["/properties", "/properties/:id", "/properties/:id/photos"]
+      "endpoints": [
+        "GET /properties",
+        "POST /properties",
+        "GET /properties/:property_id",
+        "PUT /properties/:property_id",
+        "DELETE /properties/:property_id",
+        "GET /properties/:property_id/photos",
+        "POST /properties/:property_id/photos"
+      ]
     },
     {
       "name": "Advanced Property Search",
-      "description": "Comprehensive search with filters for country, property type, price range, natural features",
+      "description": "Multi-criteria search with filters for location, price, features, and natural amenities",
       "files": [
         "vitereact/src/components/views/UV_SearchResults.tsx",
-        "vitereact/src/components/views/UV_Landing.tsx"
+        "vitereact/src/store/main.tsx"
       ],
-      "endpoints": ["/properties (with query parameters)"]
+      "features": [
+        "Location-based search (country, region, city)",
+        "Price range filtering",
+        "Property type filtering",
+        "Natural features search",
+        "Outdoor amenities filtering",
+        "Size and bedroom/bathroom filters",
+        "Sorting options"
+      ]
     },
     {
-      "name": "User Dashboard",
-      "description": "Personalized dashboard with user statistics, recent activity, and quick actions",
+      "name": "User Dashboard System",
+      "description": "Role-based dashboards for buyers, sellers, and agents",
       "files": [
         "vitereact/src/components/views/UV_UserDashboard.tsx",
         "vitereact/src/components/views/UV_Dashboard.tsx"
       ],
-      "endpoints": ["/dashboard/stats", "/users/me"]
+      "user_types": ["buyer", "seller", "agent", "admin"],
+      "endpoints": [
+        "GET /dashboard/stats",
+        "GET /properties/:property_id/analytics"
+      ]
     },
     {
-      "name": "Property Inquiries System",
-      "description": "Inquiry management for property owners and buyers with threaded responses",
+      "name": "Property Inquiry System",
+      "description": "Communication system between buyers and sellers with threaded responses",
       "files": [
         "vitereact/src/components/views/UV_InquiryManagement.tsx"
       ],
-      "endpoints": ["/properties/:id/inquiries", "/inquiries", "/inquiries/:id/responses"]
+      "endpoints": [
+        "GET /properties/:property_id/inquiries",
+        "POST /properties/:property_id/inquiries",
+        "GET /inquiries",
+        "GET /inquiries/:inquiry_id",
+        "PUT /inquiries/:inquiry_id",
+        "GET /inquiries/:inquiry_id/responses",
+        "POST /inquiries/:inquiry_id/responses"
+      ]
     },
     {
-      "name": "Saved Properties",
-      "description": "Users can save favorite properties for later viewing",
+      "name": "Saved Properties & Searches",
+      "description": "Users can save favorite properties and create search alerts",
       "files": [
-        "vitereact/src/components/views/UV_SavedProperties.tsx"
+        "vitereact/src/components/views/UV_SavedProperties.tsx",
+        "vitereact/src/store/main.tsx"
       ],
-      "endpoints": ["/saved-properties"]
+      "endpoints": [
+        "GET /saved-properties",
+        "POST /saved-properties",
+        "DELETE /saved-properties/:saved_property_id",
+        "GET /saved-searches",
+        "POST /saved-searches"
+      ]
     },
     {
-      "name": "User Profile Management", 
-      "description": "Complete profile management with settings and preferences",
+      "name": "User Profile Management",
+      "description": "Complete user profile management with preferences and settings",
       "files": [
         "vitereact/src/components/views/UV_ProfileSettings.tsx"
       ],
-      "endpoints": ["/users/me"]
-    },
-    {
-      "name": "Responsive Navigation",
-      "description": "Global navigation with mobile-responsive design",
-      "files": [
-        "vitereact/src/components/views/GV_TopNav.tsx",
-        "vitereact/src/components/views/GV_MobileNav.tsx",
-        "vitereact/src/components/views/GV_Footer.tsx"
+      "endpoints": [
+        "GET /users/me",
+        "PUT /users/me",
+        "DELETE /users/me",
+        "GET /users/:user_id"
       ]
-    },
-    {
-      "name": "Landing Page with Hero Carousel",
-      "description": "Attractive landing page with property showcase and search functionality",
-      "files": [
-        "vitereact/src/components/views/UV_Landing.tsx"
-      ]
-    },
-    {
-      "name": "Property Analytics",
-      "description": "View tracking and analytics for property listings",
-      "files": [],
-      "endpoints": ["/properties/:id/analytics", "/properties/:id/view"]
     },
     {
       "name": "Notification System",
-      "description": "In-app notifications for inquiries and property updates",
-      "files": [],
-      "endpoints": ["/notifications"]
+      "description": "Real-time notifications for inquiries, saved searches, and property updates",
+      "files": [
+        "vitereact/src/store/main.tsx"
+      ],
+      "endpoints": [
+        "GET /notifications",
+        "PUT /notifications/:notification_id/read",
+        "PUT /notifications/mark-all-read"
+      ]
+    },
+    {
+      "name": "Analytics & Tracking",
+      "description": "Property view tracking and analytics for property owners",
+      "endpoints": [
+        "POST /properties/:property_id/view",
+        "GET /properties/:property_id/analytics",
+        "GET /search-history",
+        "POST /search-history"
+      ]
     }
   ],
-  "database_tables": [
-    "users",
-    "properties", 
-    "property_photos",
-    "property_inquiries",
-    "inquiry_responses",
-    "saved_properties",
-    "saved_searches",
-    "notifications",
-    "property_views",
-    "search_history",
-    "user_sessions",
-    "property_analytics"
-  ],
-  "api_endpoints": [
-    "/auth/register",
-    "/auth/login", 
-    "/auth/logout",
-    "/auth/forgot-password",
-    "/auth/reset-password",
-    "/auth/verify-email",
-    "/auth/refresh-token",
-    "/users/me",
-    "/users/:user_id",
-    "/properties",
-    "/properties/:property_id",
-    "/properties/:property_id/photos",
-    "/properties/:property_id/inquiries",
-    "/properties/:property_id/view",
-    "/properties/:property_id/analytics",
-    "/inquiries",
-    "/inquiries/:inquiry_id",
-    "/inquiries/:inquiry_id/responses",
-    "/saved-properties",
-    "/saved-searches",
-    "/notifications",
-    "/dashboard/stats",
-    "/search-history"
-  ],
-  "user_types": ["buyer", "seller", "agent", "admin"],
-  "property_types": ["villa", "cabin", "condominium", "farm", "land", "mansion", "house", "apartment", "commercial"],
-  "key_specializations": [
-    "Scenic properties with natural beauty",
-    "Properties with breathtaking views",
-    "Natural features and outdoor amenities",
-    "Environmental features tracking",
-    "Outdoor activities integration"
-  ],
-  "authentication_flow": {
-    "registration": "Email/password with email verification",
-    "login": "JWT tokens with refresh token support",
-    "password_reset": "Token-based password reset via email",
-    "session_management": "Persistent sessions with device tracking"
+  "database_schema": {
+    "tables": [
+      "users",
+      "properties", 
+      "property_photos",
+      "property_inquiries",
+      "saved_properties",
+      "saved_searches",
+      "search_history",
+      "notifications",
+      "property_views",
+      "user_sessions",
+      "property_analytics",
+      "inquiry_responses",
+      "system_settings"
+    ],
+    "key_relationships": [
+      "users -> properties (one-to-many)",
+      "properties -> property_photos (one-to-many)",
+      "properties -> property_inquiries (one-to-many)",
+      "users -> saved_properties (one-to-many)",
+      "users -> saved_searches (one-to-many)",
+      "users -> notifications (one-to-many)"
+    ]
   },
-  "file_structure": {
-    "frontend_components": "vitereact/src/components/",
-    "ui_components": "vitereact/src/components/ui/",
-    "views": "vitereact/src/components/views/",
-    "store": "vitereact/src/store/main.tsx",
-    "backend_server": "backend/server.ts",
-    "database_schema": "backend/schema.ts",
-    "database_init": "backend/db.sql"
+  "api_structure": {
+    "base_url": "http://localhost:3000",
+    "authentication": "Bearer JWT tokens",
+    "content_type": "application/json",
+    "total_endpoints": 35,
+    "endpoint_categories": [
+      "Authentication (7 endpoints)",
+      "User Management (4 endpoints)", 
+      "Property Management (8 endpoints)",
+      "Property Photos (4 endpoints)",
+      "Inquiries (7 endpoints)",
+      "Saved Items (4 endpoints)",
+      "Notifications (3 endpoints)",
+      "Analytics (3 endpoints)",
+      "Static/Misc (2 endpoints)"
+    ]
   },
-  "development_status": "Fully functional with comprehensive features",
-  "deployment_ready": true,
-  "testing_notes": "Application builds successfully, no technical issues found"
+  "ui_components": {
+    "global_components": [
+      "GV_TopNav.tsx - Main navigation header",
+      "GV_MobileNav.tsx - Mobile navigation menu", 
+      "GV_Footer.tsx - Site footer"
+    ],
+    "page_components": [
+      "UV_Landing.tsx - Homepage/landing page",
+      "UV_Login.tsx - User login form",
+      "UV_Registration.tsx - User registration form",
+      "UV_PasswordReset.tsx - Password reset form",
+      "UV_SearchResults.tsx - Property search results",
+      "UV_PropertyDetails.tsx - Individual property details",
+      "UV_UserDashboard.tsx - User dashboard",
+      "UV_ProfileSettings.tsx - User profile settings",
+      "UV_CreateListing.tsx - Create/edit property listing",
+      "UV_MyListings.tsx - User's property listings",
+      "UV_SavedProperties.tsx - User's saved properties",
+      "UV_InquiryManagement.tsx - Manage property inquiries",
+      "UV_Help.tsx - Help/support page",
+      "UV_Terms.tsx - Terms of service",
+      "UV_Privacy.tsx - Privacy policy"
+    ],
+    "ui_library": "Radix UI with custom Tailwind styling"
+  },
+  "state_management": {
+    "library": "Zustand with persistence",
+    "store_file": "vitereact/src/store/main.tsx",
+    "state_sections": [
+      "authentication_state - User auth and profile data",
+      "search_state - Search criteria and results",
+      "saved_properties_state - User's saved properties",
+      "notification_state - Notifications and counts"
+    ],
+    "persistence": "LocalStorage with selective state persistence"
+  },
+  "routing": {
+    "library": "React Router DOM v6",
+    "route_types": [
+      "Public routes (landing, search, property details, help)",
+      "Auth routes (login, register, password reset)",
+      "Protected routes (dashboard, profile, saved items)",
+      "Role-based routes (create listing, manage inquiries)"
+    ],
+    "route_guards": [
+      "ProtectedRoute - Requires authentication",
+      "UserTypeProtectedRoute - Requires specific user type",
+      "AuthRedirect - Redirects authenticated users"
+    ]
+  },
+  "deployment_info": {
+    "build_command": "npm run build",
+    "dev_command": "npm run dev", 
+    "backend_start": "npm start",
+    "static_files": "Served from backend at /vitereact/dist",
+    "environment_variables": [
+      "VITE_API_BASE_URL",
+      "DATABASE_URL",
+      "JWT_SECRET",
+      "FRONTEND_URL"
+    ]
+  }
 }

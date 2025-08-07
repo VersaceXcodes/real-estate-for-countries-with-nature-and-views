@@ -1,0 +1,273 @@
+{
+  "generated_at": "2025-01-08T10:30:00Z",
+  "user_structure": {
+    "table_name": "users",
+    "role_field": "user_type",
+    "registration_endpoint": "/auth/register",
+    "login_endpoint": "/auth/login",
+    "password_storage": "plain_text_for_development",
+    "required_fields": ["email", "password", "name", "user_type", "phone", "profile_photo_url", "notification_preferences", "countries_of_interest"]
+  },
+  "total_users": 8,
+  "verified_users": 8,
+  "note": "These users are from the database seed data with known passwords for testing",
+  "users": [
+    {
+      "user_id": "user_001",
+      "email": "john.doe@example.com",
+      "password": "password123",
+      "name": "John Doe",
+      "phone": "+1-555-0101",
+      "user_type": "buyer",
+      "profile_photo_url": "https://picsum.photos/200/200?random=1",
+      "is_verified": true,
+      "email_verified": true,
+      "countries_of_interest": ["USA", "Canada"],
+      "description": "Active buyer interested in ocean view properties and investment opportunities"
+    },
+    {
+      "user_id": "user_002", 
+      "email": "jane.smith@example.com",
+      "password": "password123",
+      "name": "Jane Smith",
+      "phone": "+1-555-0102",
+      "user_type": "seller",
+      "profile_photo_url": "https://picsum.photos/200/200?random=2",
+      "is_verified": true,
+      "email_verified": true,
+      "countries_of_interest": ["Mexico", "Costa Rica"],
+      "description": "Property seller with multiple high-end listings including ocean view villa and beachfront condo"
+    },
+    {
+      "user_id": "user_003",
+      "email": "mike.johnson@example.com", 
+      "password": "user123",
+      "name": "Mike Johnson",
+      "phone": "+1-555-0103",
+      "user_type": "agent",
+      "profile_photo_url": "https://picsum.photos/200/200?random=3",
+      "is_verified": true,
+      "email_verified": true,
+      "countries_of_interest": ["Belize", "Panama"],
+      "description": "Real estate agent specializing in Central American properties"
+    },
+    {
+      "user_id": "user_004",
+      "email": "sarah.wilson@example.com",
+      "password": "admin123", 
+      "name": "Sarah Wilson",
+      "phone": "+1-555-0104",
+      "user_type": "buyer",
+      "profile_photo_url": "https://picsum.photos/200/200?random=4",
+      "is_verified": false,
+      "email_verified": true,
+      "countries_of_interest": ["Nicaragua", "Honduras"],
+      "description": "Retirement-focused buyer looking for beachfront condos"
+    },
+    {
+      "user_id": "user_005",
+      "email": "david.brown@example.com",
+      "password": "password123",
+      "name": "David Brown", 
+      "phone": "+1-555-0105",
+      "user_type": "seller",
+      "profile_photo_url": "https://picsum.photos/200/200?random=5",
+      "is_verified": true,
+      "email_verified": true,
+      "countries_of_interest": ["Guatemala", "El Salvador"],
+      "description": "Seller with unique properties including mountain retreat and private island"
+    },
+    {
+      "user_id": "user_006",
+      "email": "emma.davis@example.com",
+      "password": "user123",
+      "name": "Emma Davis",
+      "phone": "+1-555-0106", 
+      "user_type": "buyer",
+      "profile_photo_url": "https://picsum.photos/200/200?random=6",
+      "is_verified": true,
+      "email_verified": false,
+      "countries_of_interest": ["Mexico"],
+      "description": "Investment-focused buyer representing investor groups"
+    },
+    {
+      "user_id": "user_007",
+      "email": "robert.taylor@example.com",
+      "password": "password123",
+      "name": "Robert Taylor",
+      "phone": "+1-555-0107",
+      "user_type": "agent",
+      "profile_photo_url": null,
+      "is_verified": true,
+      "email_verified": true,
+      "countries_of_interest": ["Costa Rica", "Panama"],
+      "description": "Agent with coffee farm and agricultural property expertise"
+    },
+    {
+      "user_id": "user_008",
+      "email": "lisa.anderson@example.com",
+      "password": "admin123",
+      "name": "Lisa Anderson",
+      "phone": "+1-555-0108",
+      "user_type": "buyer", 
+      "profile_photo_url": "https://picsum.photos/200/200?random=8",
+      "is_verified": true,
+      "email_verified": true,
+      "countries_of_interest": ["Belize"],
+      "description": "Buyer interested in mountain retreats and eco-friendly properties"
+    }
+  ],
+  "by_role": {
+    "buyer": [
+      {
+        "email": "john.doe@example.com",
+        "password": "password123",
+        "name": "John Doe",
+        "user_type": "buyer",
+        "verified": true,
+        "description": "Active buyer with saved properties and search alerts"
+      },
+      {
+        "email": "sarah.wilson@example.com", 
+        "password": "admin123",
+        "name": "Sarah Wilson",
+        "user_type": "buyer",
+        "verified": false,
+        "description": "Retirement-focused buyer"
+      },
+      {
+        "email": "emma.davis@example.com",
+        "password": "user123", 
+        "name": "Emma Davis",
+        "user_type": "buyer",
+        "verified": true,
+        "description": "Investment buyer representing groups"
+      },
+      {
+        "email": "lisa.anderson@example.com",
+        "password": "admin123",
+        "name": "Lisa Anderson", 
+        "user_type": "buyer",
+        "verified": true,
+        "description": "Eco-focused buyer"
+      }
+    ],
+    "seller": [
+      {
+        "email": "jane.smith@example.com",
+        "password": "password123",
+        "name": "Jane Smith",
+        "user_type": "seller", 
+        "verified": true,
+        "description": "Active seller with multiple premium listings"
+      },
+      {
+        "email": "david.brown@example.com",
+        "password": "password123",
+        "name": "David Brown",
+        "user_type": "seller",
+        "verified": true,
+        "description": "Seller with unique properties (island, mountain retreat)"
+      }
+    ],
+    "agent": [
+      {
+        "email": "mike.johnson@example.com",
+        "password": "user123", 
+        "name": "Mike Johnson",
+        "user_type": "agent",
+        "verified": true,
+        "description": "Central American property specialist"
+      },
+      {
+        "email": "robert.taylor@example.com",
+        "password": "password123",
+        "name": "Robert Taylor",
+        "user_type": "agent",
+        "verified": true,
+        "description": "Agricultural and coffee farm specialist"
+      }
+    ]
+  },
+  "test_scenarios": {
+    "authentication_tests": [
+      {
+        "scenario": "Successful buyer login",
+        "credentials": {"email": "john.doe@example.com", "password": "password123"},
+        "expected_user_type": "buyer"
+      },
+      {
+        "scenario": "Successful seller login", 
+        "credentials": {"email": "jane.smith@example.com", "password": "password123"},
+        "expected_user_type": "seller"
+      },
+      {
+        "scenario": "Successful agent login",
+        "credentials": {"email": "mike.johnson@example.com", "password": "user123"},
+        "expected_user_type": "agent"
+      },
+      {
+        "scenario": "Invalid password test",
+        "credentials": {"email": "john.doe@example.com", "password": "wrongpassword"},
+        "expected_result": "authentication_failure"
+      }
+    ],
+    "role_based_access": [
+      {
+        "role": "seller",
+        "user": "jane.smith@example.com",
+        "accessible_features": ["create_listing", "manage_listings", "view_inquiries", "property_analytics"],
+        "restricted_features": ["admin_panel"]
+      },
+      {
+        "role": "buyer", 
+        "user": "john.doe@example.com",
+        "accessible_features": ["search_properties", "save_properties", "send_inquiries", "saved_searches"],
+        "restricted_features": ["create_listing", "manage_listings"]
+      },
+      {
+        "role": "agent",
+        "user": "mike.johnson@example.com", 
+        "accessible_features": ["create_listing", "manage_listings", "view_inquiries", "client_management"],
+        "restricted_features": ["admin_panel"]
+      }
+    ]
+  },
+  "sample_properties": {
+    "note": "These properties exist in the seed data for testing property-related features",
+    "properties": [
+      {
+        "property_id": "prop_001",
+        "title": "Ocean View Villa in Costa Rica",
+        "owner": "jane.smith@example.com",
+        "price": 850000,
+        "type": "villa",
+        "country": "Costa Rica"
+      },
+      {
+        "property_id": "prop_002", 
+        "title": "Mountain Retreat in Belize",
+        "owner": "david.brown@example.com",
+        "price": 425000,
+        "type": "cabin",
+        "country": "Belize"
+      },
+      {
+        "property_id": "prop_003",
+        "title": "Beachfront Condo in Mexico", 
+        "owner": "jane.smith@example.com",
+        "price": 320000,
+        "type": "condominium",
+        "country": "Mexico"
+      }
+    ]
+  },
+  "testing_notes": [
+    "All passwords are stored in plain text for development/testing purposes",
+    "Users have different verification statuses for testing verification flows",
+    "Multiple user types available for role-based testing",
+    "Seed data includes properties, inquiries, and saved items for comprehensive testing",
+    "Some users have existing inquiries and saved properties for testing those features",
+    "Email verification tokens and password reset tokens are included in seed data"
+  ]
+}

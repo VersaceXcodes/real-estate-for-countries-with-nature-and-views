@@ -1,408 +1,448 @@
 {
   "generated_at": "2025-01-08T10:30:00Z",
-  "application_name": "NatureEstate - Real Estate Platform",
+  "application_info": {
+    "name": "NatureEstate Real Estate Platform",
+    "frontend_url": "https://123real-estate-for-countries-with-nature-and-views.launchpulse.ai",
+    "backend_url": "https://123real-estate-for-countries-with-nature-and-views.launchpulse.ai",
+    "type": "Full-stack real estate platform"
+  },
   "total_test_cases": 25,
-  "test_categories": ["functionality", "interface", "authentication", "navigation", "content", "responsiveness", "performance"],
+  "categories": ["functionality", "authentication", "interface", "content", "navigation", "forms", "search", "user_roles"],
   "testCases": [
     {
       "id": "functional-app-test",
       "name": "Functional Application Test",
       "category": "functionality",
       "priority": "critical",
-      "description": "Verify the application has actual functionality beyond basic placeholder",
+      "description": "Verify the application has actual real estate functionality beyond basic placeholder content",
       "steps": [
         "Navigate to application homepage",
-        "Verify multiple interactive elements exist (search form, property cards, navigation)",
-        "Check for proper navigation structure with working links",
-        "Verify application shows real estate content, not just 'Vite + React' text",
-        "Confirm hero section with property carousel is functional"
+        "Verify property search functionality exists",
+        "Check for property listings or search results",
+        "Verify navigation menu has real estate specific options (Properties, Search, Login, etc.)",
+        "Confirm application shows real estate content, not just 'Vite + React' placeholder"
       ],
-      "expectedOutcome": "Application shows functional real estate platform with property listings, search functionality, and interactive features",
-      "failureCondition": "If page only shows 'Vite + React' placeholder or basic template content, this test should FAIL"
+      "expectedOutcome": "Application displays functional real estate platform with property search, listings, and navigation",
+      "failureCondition": "If page only shows 'Vite + React' placeholder or generic content, this test should FAIL"
     },
     {
-      "id": "landing-page-content-test",
-      "name": "Landing Page Content Quality Test",
-      "category": "content",
+      "id": "homepage-content-test",
+      "name": "Homepage Content Quality Test",
+      "category": "content", 
       "priority": "high",
-      "description": "Verify landing page displays comprehensive real estate content",
+      "description": "Verify homepage displays professional real estate content and branding",
       "steps": [
-        "Load the homepage",
-        "Check for hero section with property images",
-        "Verify 'Featured Scenic Properties' section displays property cards",
-        "Confirm 'Explore Properties by Country' section shows country listings",
-        "Verify 'Why Choose NatureEstate' value proposition section",
-        "Check call-to-action sections are present"
+        "Load homepage/landing page",
+        "Check for NatureEstate branding and logo",
+        "Verify hero section with property search or featured properties",
+        "Look for professional real estate imagery",
+        "Check for clear value proposition about nature/scenic properties"
       ],
-      "expectedOutcome": "Landing page displays rich real estate content with property showcases, search functionality, and professional design"
-    },
-    {
-      "id": "property-search-functionality",
-      "name": "Property Search Functionality Test",
-      "category": "functionality", 
-      "priority": "critical",
-      "description": "Test the main property search feature",
-      "steps": [
-        "Navigate to homepage",
-        "Locate the search form in hero section",
-        "Select a country from dropdown",
-        "Select a property type",
-        "Choose a price range",
-        "Click 'Explore Properties' button",
-        "Verify navigation to search results page"
-      ],
-      "expectedOutcome": "Search form successfully filters and navigates to search results with applied filters"
+      "expectedOutcome": "Homepage shows professional real estate platform focused on natural/scenic properties"
     },
     {
       "id": "navigation-structure-test",
       "name": "Navigation Structure Test",
       "category": "navigation",
-      "priority": "high",
-      "description": "Verify main navigation elements are functional",
+      "priority": "high", 
+      "description": "Test main navigation menu and routing functionality",
       "steps": [
-        "Check top navigation bar is present",
-        "Verify navigation links (Home, Search, Login/Register)",
-        "Test mobile navigation menu functionality",
-        "Verify footer navigation links",
-        "Test breadcrumb navigation where applicable"
+        "Check top navigation bar exists",
+        "Verify key navigation links: Home, Search, Properties, Login/Register",
+        "Test mobile navigation menu if on mobile device",
+        "Click each navigation link to verify routing works",
+        "Check footer navigation exists"
       ],
-      "expectedOutcome": "All navigation elements are present and functional across desktop and mobile"
+      "expectedOutcome": "Complete navigation system with working links to all major sections"
     },
     {
-      "id": "user-registration-test",
-      "name": "User Registration Process Test",
-      "category": "authentication",
+      "id": "property-search-functionality",
+      "name": "Property Search Functionality Test",
+      "category": "search",
       "priority": "critical",
-      "description": "Test user registration functionality",
+      "description": "Test the core property search feature with filters and results",
       "steps": [
-        "Navigate to registration page",
-        "Fill out registration form with valid data",
-        "Select user type (buyer/seller/agent)",
-        "Submit registration form",
-        "Verify success message or redirect to dashboard",
-        "Check for email verification prompt if applicable"
+        "Navigate to search page or find search form",
+        "Test basic text search functionality",
+        "Try location-based search (country, region, city)",
+        "Test price range filters",
+        "Test property type filters (villa, cabin, condo, etc.)",
+        "Test natural features search",
+        "Verify search results display properly",
+        "Check sorting options work"
       ],
-      "expectedOutcome": "User can successfully register and receive appropriate feedback"
+      "expectedOutcome": "Comprehensive search system with multiple filters returning relevant property results"
     },
     {
-      "id": "user-login-test",
-      "name": "User Login Process Test", 
+      "id": "user-authentication-flow",
+      "name": "User Authentication Flow Test", 
       "category": "authentication",
       "priority": "critical",
-      "description": "Test user login functionality",
+      "description": "Test complete user authentication system including login, registration, and logout",
       "steps": [
         "Navigate to login page",
-        "Enter valid email and password",
-        "Click login button",
-        "Verify successful login and redirect to dashboard",
-        "Check that user session is maintained"
+        "Test login form with valid credentials (john.doe@example.com / password123)",
+        "Verify successful login redirects to dashboard",
+        "Check user profile/account information displays",
+        "Test logout functionality",
+        "Navigate to registration page",
+        "Test registration form validation",
+        "Verify password reset functionality exists"
       ],
-      "expectedOutcome": "User can successfully log in and access authenticated features"
+      "expectedOutcome": "Complete authentication system with login, registration, and user management"
     },
     {
-      "id": "property-listing-display-test",
-      "name": "Property Listing Display Test",
-      "category": "functionality",
-      "priority": "high", 
-      "description": "Verify property listings display correctly",
-      "steps": [
-        "Navigate to search results or featured properties",
-        "Verify property cards display key information (title, price, location)",
-        "Check property images are displayed",
-        "Verify property details like bedrooms, bathrooms if shown",
-        "Test 'View Details' buttons functionality"
-      ],
-      "expectedOutcome": "Property listings display comprehensive information in an organized, visually appealing format"
-    },
-    {
-      "id": "property-details-page-test",
-      "name": "Property Details Page Test",
+      "id": "property-details-view",
+      "name": "Property Details View Test",
       "category": "functionality",
       "priority": "high",
-      "description": "Test individual property detail pages",
+      "description": "Test individual property detail pages with comprehensive information",
       "steps": [
-        "Click on a property from listings",
-        "Verify property details page loads",
-        "Check comprehensive property information is displayed",
-        "Verify property photos/gallery functionality",
-        "Test inquiry form if present",
-        "Check owner information display"
+        "Navigate to a property listing from search results",
+        "Verify property details page loads with complete information",
+        "Check property photos/image gallery",
+        "Verify property specifications (price, bedrooms, bathrooms, etc.)",
+        "Check location information and map if available",
+        "Test property inquiry/contact functionality",
+        "Verify owner/agent information displays"
       ],
-      "expectedOutcome": "Property details page shows complete property information with functional interactive elements"
+      "expectedOutcome": "Detailed property pages with comprehensive information, photos, and contact options"
+    },
+    {
+      "id": "user-dashboard-functionality",
+      "name": "User Dashboard Functionality Test",
+      "category": "user_roles",
+      "priority": "high",
+      "description": "Test user dashboard with role-specific features and content",
+      "steps": [
+        "Login as buyer user (john.doe@example.com / password123)",
+        "Navigate to user dashboard",
+        "Verify buyer-specific features (saved properties, search alerts)",
+        "Logout and login as seller (jane.smith@example.com / password123)",
+        "Check seller dashboard features (my listings, inquiries, analytics)",
+        "Test agent dashboard if agent user available"
+      ],
+      "expectedOutcome": "Role-based dashboards with appropriate features for each user type"
+    },
+    {
+      "id": "property-inquiry-system",
+      "name": "Property Inquiry System Test",
+      "category": "functionality", 
+      "priority": "high",
+      "description": "Test communication system between buyers and property owners",
+      "steps": [
+        "Navigate to a property detail page",
+        "Find and test property inquiry form",
+        "Submit inquiry with contact information and message",
+        "Login as property owner to check received inquiries",
+        "Test inquiry response functionality",
+        "Verify inquiry status tracking"
+      ],
+      "expectedOutcome": "Working inquiry system allowing communication between buyers and sellers"
+    },
+    {
+      "id": "saved-properties-feature",
+      "name": "Saved Properties Feature Test",
+      "category": "functionality",
+      "priority": "medium",
+      "description": "Test ability to save and manage favorite properties",
+      "steps": [
+        "Login as buyer user",
+        "Browse property listings",
+        "Test 'save property' or 'favorite' functionality",
+        "Navigate to saved properties page",
+        "Verify saved properties display correctly",
+        "Test removing properties from saved list",
+        "Check saved properties persist across sessions"
+      ],
+      "expectedOutcome": "Functional saved properties system with persistent storage"
     },
     {
       "id": "responsive-design-test",
       "name": "Responsive Design Test",
-      "category": "responsiveness",
-      "priority": "high",
-      "description": "Verify application works on different screen sizes",
+      "category": "interface",
+      "priority": "medium",
+      "description": "Test application responsiveness across different screen sizes",
       "steps": [
-        "Test application on desktop (1920x1080)",
-        "Test on tablet size (768x1024)",
-        "Test on mobile size (375x667)",
+        "Test application on desktop resolution (1920x1080)",
+        "Test on tablet resolution (768x1024)",
+        "Test on mobile resolution (375x667)",
         "Verify navigation adapts to screen size",
-        "Check property listings layout on mobile",
-        "Test search form usability on mobile"
+        "Check property listings display properly on all sizes",
+        "Test forms and buttons are accessible on mobile"
       ],
-      "expectedOutcome": "Application displays properly and remains functional across all device sizes"
-    },
-    {
-      "id": "search-filters-test",
-      "name": "Advanced Search Filters Test",
-      "category": "functionality",
-      "priority": "high",
-      "description": "Test advanced search filtering capabilities",
-      "steps": [
-        "Navigate to search page",
-        "Apply multiple filters (country, property type, price range)",
-        "Verify results update based on filters",
-        "Test clearing filters functionality",
-        "Check filter combinations work correctly"
-      ],
-      "expectedOutcome": "Search filters work correctly and produce relevant results"
-    },
-    {
-      "id": "user-dashboard-test",
-      "name": "User Dashboard Functionality Test",
-      "category": "functionality",
-      "priority": "high",
-      "description": "Test authenticated user dashboard features",
-      "steps": [
-        "Log in as a user",
-        "Navigate to dashboard",
-        "Verify dashboard displays user-specific information",
-        "Check quick action buttons functionality",
-        "Test navigation to other user features"
-      ],
-      "expectedOutcome": "Dashboard provides personalized experience with functional user features"
-    },
-    {
-      "id": "property-inquiry-test",
-      "name": "Property Inquiry System Test",
-      "category": "functionality",
-      "priority": "high",
-      "description": "Test property inquiry functionality",
-      "steps": [
-        "Navigate to a property details page",
-        "Locate inquiry/contact form",
-        "Fill out inquiry form with valid information",
-        "Submit inquiry",
-        "Verify success confirmation",
-        "Check if inquiry appears in user's inquiry history"
-      ],
-      "expectedOutcome": "Users can successfully submit inquiries about properties"
-    },
-    {
-      "id": "saved-properties-test",
-      "name": "Saved Properties Feature Test",
-      "category": "functionality",
-      "priority": "medium",
-      "description": "Test property saving/favoriting functionality",
-      "steps": [
-        "Log in as a user",
-        "Navigate to property listings",
-        "Click heart/save icon on a property",
-        "Navigate to saved properties page",
-        "Verify property appears in saved list",
-        "Test removing property from saved list"
-      ],
-      "expectedOutcome": "Users can save and manage favorite properties"
-    },
-    {
-      "id": "create-listing-test",
-      "name": "Create Property Listing Test",
-      "category": "functionality",
-      "priority": "high",
-      "description": "Test property listing creation for sellers/agents",
-      "steps": [
-        "Log in as seller or agent user",
-        "Navigate to create listing page",
-        "Fill out property listing form",
-        "Add property photos if functionality exists",
-        "Submit listing",
-        "Verify listing appears in user's listings"
-      ],
-      "expectedOutcome": "Authorized users can successfully create property listings"
-    },
-    {
-      "id": "profile-management-test",
-      "name": "User Profile Management Test",
-      "category": "functionality",
-      "priority": "medium",
-      "description": "Test user profile editing capabilities",
-      "steps": [
-        "Log in as a user",
-        "Navigate to profile settings",
-        "Update profile information",
-        "Save changes",
-        "Verify changes are reflected",
-        "Test profile photo upload if available"
-      ],
-      "expectedOutcome": "Users can successfully update their profile information"
-    },
-    {
-      "id": "password-reset-test",
-      "name": "Password Reset Functionality Test",
-      "category": "authentication",
-      "priority": "medium",
-      "description": "Test password reset process",
-      "steps": [
-        "Navigate to login page",
-        "Click 'Forgot Password' link",
-        "Enter email address",
-        "Submit password reset request",
-        "Verify success message is displayed",
-        "Check for password reset instructions"
-      ],
-      "expectedOutcome": "Password reset process initiates successfully with appropriate user feedback"
+      "expectedOutcome": "Application displays and functions properly across all device sizes"
     },
     {
       "id": "form-validation-test",
       "name": "Form Validation Test",
-      "category": "interface",
+      "category": "forms",
       "priority": "medium",
-      "description": "Test form validation across the application",
+      "description": "Test form validation across registration, login, and inquiry forms",
       "steps": [
-        "Test registration form with invalid data",
+        "Test registration form with invalid email format",
+        "Test registration with weak password",
         "Test login form with empty fields",
-        "Test property creation form validation",
-        "Test inquiry form validation",
-        "Verify appropriate error messages display"
+        "Test property inquiry form validation",
+        "Verify error messages display appropriately",
+        "Test successful form submissions"
       ],
-      "expectedOutcome": "Forms properly validate input and display helpful error messages"
+      "expectedOutcome": "Proper form validation with clear error messages and successful submission handling"
     },
     {
-      "id": "loading-states-test",
-      "name": "Loading States and Performance Test",
-      "category": "performance",
-      "priority": "medium",
-      "description": "Verify loading states and application performance",
+      "id": "property-creation-test",
+      "name": "Property Creation Test",
+      "category": "user_roles",
+      "priority": "high",
+      "description": "Test property listing creation for sellers and agents",
       "steps": [
-        "Check for loading indicators during data fetching",
-        "Verify smooth transitions between pages",
-        "Test application responsiveness during searches",
-        "Check for proper error handling when requests fail"
+        "Login as seller user (jane.smith@example.com / password123)",
+        "Navigate to create listing page",
+        "Fill out property creation form with all required fields",
+        "Test photo upload functionality if available",
+        "Submit new property listing",
+        "Verify property appears in user's listings",
+        "Check property is searchable by other users"
       ],
-      "expectedOutcome": "Application provides good user experience with appropriate loading states"
+      "expectedOutcome": "Sellers can successfully create and manage property listings"
     },
     {
-      "id": "image-display-test",
-      "name": "Image Display and Gallery Test",
-      "category": "interface",
+      "id": "search-filters-advanced",
+      "name": "Advanced Search Filters Test",
+      "category": "search",
       "priority": "medium",
-      "description": "Test property image display functionality",
+      "description": "Test advanced search filters specific to nature/scenic properties",
       "steps": [
-        "Navigate to property listings",
-        "Verify property images load correctly",
-        "Test property detail page image gallery",
-        "Check image carousel functionality if present",
-        "Verify image optimization and loading"
+        "Access property search with advanced filters",
+        "Test natural features filters (ocean front, mountain view, etc.)",
+        "Test outdoor amenities filters (pool, hiking trails, etc.)",
+        "Test land size and square footage filters",
+        "Test year built and property condition filters",
+        "Combine multiple filters and verify results",
+        "Test filter reset functionality"
       ],
-      "expectedOutcome": "Property images display correctly with functional gallery features"
+      "expectedOutcome": "Advanced search filters work correctly and return appropriate results"
     },
     {
-      "id": "country-filter-test",
-      "name": "Country-based Property Filtering Test",
+      "id": "user-profile-management",
+      "name": "User Profile Management Test",
       "category": "functionality",
-      "priority": "high",
-      "description": "Test country-specific property filtering",
-      "steps": [
-        "Navigate to 'Explore Properties by Country' section",
-        "Click on a country card",
-        "Verify navigation to filtered search results",
-        "Check that results show only properties from selected country",
-        "Test multiple country selections"
-      ],
-      "expectedOutcome": "Country filtering works correctly and shows relevant properties"
-    },
-    {
-      "id": "natural-features-display-test",
-      "name": "Natural Features Display Test",
-      "category": "content",
       "priority": "medium",
-      "description": "Verify natural features and scenic property information display",
+      "description": "Test user profile editing and preference management",
       "steps": [
-        "Navigate to property listings",
-        "Check for natural features tags/badges on properties",
-        "Verify outdoor amenities information",
-        "Check environmental features display",
-        "Test view types and nearby attractions information"
+        "Login and navigate to profile settings",
+        "Test editing basic profile information (name, phone, etc.)",
+        "Test updating notification preferences",
+        "Test changing countries of interest",
+        "Test profile photo upload if available",
+        "Save changes and verify they persist",
+        "Test password change functionality"
       ],
-      "expectedOutcome": "Natural features and scenic property information is prominently displayed"
-    },
-    {
-      "id": "user-type-permissions-test",
-      "name": "User Type Permissions Test",
-      "category": "authentication",
-      "priority": "high",
-      "description": "Test different user type access permissions",
-      "steps": [
-        "Test buyer user access to features",
-        "Test seller user access to listing creation",
-        "Test agent user permissions",
-        "Verify restricted access to unauthorized features",
-        "Check role-based navigation differences"
-      ],
-      "expectedOutcome": "Different user types have appropriate access to features based on their role"
+      "expectedOutcome": "Users can successfully manage their profile information and preferences"
     },
     {
       "id": "notification-system-test",
       "name": "Notification System Test",
       "category": "functionality",
       "priority": "medium",
-      "description": "Test in-app notification functionality",
+      "description": "Test notification system for inquiries and updates",
       "steps": [
-        "Log in as a user",
-        "Check for notification indicators",
-        "Test notification display and interaction",
-        "Verify notification marking as read",
-        "Check notification history if available"
+        "Login as seller with existing inquiries",
+        "Check for notification indicators in navigation",
+        "Navigate to notifications page",
+        "Verify inquiry notifications display",
+        "Test marking notifications as read",
+        "Check notification counts update correctly"
       ],
-      "expectedOutcome": "Notification system works correctly and provides relevant user updates"
+      "expectedOutcome": "Notification system properly displays and manages user notifications"
     },
     {
-      "id": "search-history-test",
-      "name": "Search History Functionality Test",
+      "id": "property-photos-gallery",
+      "name": "Property Photos Gallery Test",
+      "category": "interface",
+      "priority": "medium",
+      "description": "Test property photo galleries and image display",
+      "steps": [
+        "Navigate to property with multiple photos",
+        "Test photo gallery navigation (next/previous)",
+        "Test photo zoom or lightbox functionality",
+        "Verify photos load properly and display correctly",
+        "Test photo captions if available",
+        "Check primary photo displays in listings"
+      ],
+      "expectedOutcome": "Property photos display correctly with functional gallery navigation"
+    },
+    {
+      "id": "location-based-search",
+      "name": "Location-Based Search Test",
+      "category": "search",
+      "priority": "high",
+      "description": "Test location-specific search functionality for Central American properties",
+      "steps": [
+        "Test search by country (Costa Rica, Belize, Mexico, etc.)",
+        "Test search by region/state within countries",
+        "Test search by city/town",
+        "Verify location hierarchy works correctly",
+        "Test location autocomplete if available",
+        "Check map integration if present"
+      ],
+      "expectedOutcome": "Location-based search works accurately for Central American and Caribbean properties"
+    },
+    {
+      "id": "price-currency-handling",
+      "name": "Price and Currency Handling Test",
+      "category": "functionality",
+      "priority": "medium",
+      "description": "Test price display and currency handling across different properties",
+      "steps": [
+        "Browse properties with different price ranges",
+        "Verify price formatting displays correctly",
+        "Check currency symbols and formatting (USD, local currencies)",
+        "Test price range filters with various amounts",
+        "Verify price sorting functionality",
+        "Check price display consistency across pages"
+      ],
+      "expectedOutcome": "Prices display correctly with proper formatting and currency handling"
+    },
+    {
+      "id": "property-analytics-test",
+      "name": "Property Analytics Test",
+      "category": "user_roles",
+      "priority": "low",
+      "description": "Test analytics features for property owners",
+      "steps": [
+        "Login as seller with existing properties",
+        "Navigate to property analytics or dashboard",
+        "Check view count tracking",
+        "Verify inquiry count displays",
+        "Test analytics date ranges if available",
+        "Check performance metrics for listings"
+      ],
+      "expectedOutcome": "Property owners can view analytics and performance data for their listings"
+    },
+    {
+      "id": "help-support-pages",
+      "name": "Help and Support Pages Test",
+      "category": "content",
+      "priority": "low",
+      "description": "Test help, terms, and privacy pages for completeness",
+      "steps": [
+        "Navigate to help/support page",
+        "Verify help content is relevant to real estate platform",
+        "Check terms of service page exists and loads",
+        "Verify privacy policy page exists and loads",
+        "Test contact information or support forms",
+        "Check FAQ section if available"
+      ],
+      "expectedOutcome": "Complete help and legal pages with relevant real estate platform content"
+    },
+    {
+      "id": "error-handling-test",
+      "name": "Error Handling Test",
+      "category": "functionality",
+      "priority": "medium",
+      "description": "Test application error handling and user feedback",
+      "steps": [
+        "Test invalid URLs/routes (404 handling)",
+        "Test form submission with server errors",
+        "Test network connectivity issues",
+        "Verify error messages are user-friendly",
+        "Test recovery from error states",
+        "Check loading states during API calls"
+      ],
+      "expectedOutcome": "Application handles errors gracefully with appropriate user feedback"
+    },
+    {
+      "id": "performance-loading-test",
+      "name": "Performance and Loading Test",
+      "category": "functionality",
+      "priority": "medium",
+      "description": "Test application performance and loading times",
+      "steps": [
+        "Measure initial page load time",
+        "Test property search response time",
+        "Check image loading performance",
+        "Test navigation between pages",
+        "Verify loading indicators display during operations",
+        "Check for any console errors or warnings"
+      ],
+      "expectedOutcome": "Application loads efficiently with good performance and proper loading feedback"
+    },
+    {
+      "id": "data-persistence-test",
+      "name": "Data Persistence Test",
+      "category": "functionality",
+      "priority": "medium",
+      "description": "Test data persistence across browser sessions",
+      "steps": [
+        "Login and save some properties",
+        "Set search preferences or filters",
+        "Close browser and reopen application",
+        "Verify login state persists appropriately",
+        "Check saved properties are still available",
+        "Test search preferences persistence"
+      ],
+      "expectedOutcome": "User data and preferences persist appropriately across browser sessions"
+    },
+    {
+      "id": "accessibility-basic-test",
+      "name": "Basic Accessibility Test",
+      "category": "interface",
+      "priority": "low",
+      "description": "Test basic accessibility features and keyboard navigation",
+      "steps": [
+        "Test keyboard navigation through main interface",
+        "Check for alt text on property images",
+        "Verify form labels are properly associated",
+        "Test focus indicators on interactive elements",
+        "Check color contrast for readability",
+        "Test with screen reader if available"
+      ],
+      "expectedOutcome": "Application meets basic accessibility standards for inclusive use"
+    },
+    {
+      "id": "multi-language-support",
+      "name": "Multi-language Support Test",
       "category": "functionality",
       "priority": "low",
-      "description": "Test search history tracking and display",
+      "description": "Test multi-language support if available for international properties",
       "steps": [
-        "Log in as a user",
-        "Perform several property searches",
-        "Navigate to search history if available",
-        "Verify previous searches are recorded",
-        "Test re-running previous searches"
+        "Check for language selection options",
+        "Test switching between languages if available",
+        "Verify property descriptions in multiple languages",
+        "Check currency and date formatting for different locales",
+        "Test search functionality in different languages"
       ],
-      "expectedOutcome": "Search history is properly tracked and accessible to users"
-    },
-    {
-      "id": "footer-links-test",
-      "name": "Footer Links and Legal Pages Test",
-      "category": "navigation",
-      "priority": "low",
-      "description": "Test footer navigation and legal page accessibility",
-      "steps": [
-        "Scroll to page footer",
-        "Test all footer navigation links",
-        "Navigate to Terms of Service page",
-        "Navigate to Privacy Policy page",
-        "Navigate to Help page",
-        "Verify content is displayed on legal pages"
-      ],
-      "expectedOutcome": "Footer links work correctly and legal pages display appropriate content"
+      "expectedOutcome": "Multi-language support works correctly for international real estate platform",
+      "note": "This test may not be applicable if multi-language support is not implemented"
     }
   ],
   "test_execution_notes": [
-    "Tests should be run on the deployed application URL: https://123real-estate-for-countries-with-nature-and-views.launchpulse.ai",
-    "Critical tests must pass for application to be considered functional",
-    "High priority tests should be executed first",
-    "Test both authenticated and unauthenticated user flows",
-    "Verify responsive design on multiple device sizes",
-    "Check for proper error handling and user feedback"
+    "Tests should be run in order of priority (critical -> high -> medium -> low)",
+    "Authentication tests require valid user credentials from test_users.json",
+    "Some tests depend on seed data being present in the database",
+    "Property-specific tests should use the sample properties from the seed data",
+    "Role-based tests require logging in as different user types",
+    "Performance tests should be run on a stable network connection",
+    "Accessibility tests may require additional tools or browser extensions"
   ],
-  "success_criteria": {
-    "critical_tests_pass_rate": "100%",
-    "high_priority_tests_pass_rate": "90%",
-    "overall_pass_rate": "85%"
+  "expected_application_behavior": {
+    "primary_function": "Real estate platform specializing in properties with natural features and scenic views",
+    "target_regions": ["Central America", "Caribbean", "Mexico"],
+    "key_features": [
+      "Property search with natural feature filters",
+      "User authentication with role-based access",
+      "Property listing management for sellers/agents", 
+      "Inquiry system for buyer-seller communication",
+      "Saved properties and search alerts",
+      "Property analytics and view tracking"
+    ],
+    "user_types": ["buyer", "seller", "agent", "admin"],
+    "must_have_functionality": [
+      "Property search and filtering",
+      "User registration and login",
+      "Property detail views with photos",
+      "Basic navigation and responsive design"
+    ]
   }
 }
