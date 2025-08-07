@@ -2810,14 +2810,14 @@ app.use((error, req, res, next) => {
 API status endpoint
 Returns basic server information
 */
-app.get('/api', (req, res) => {
-  res.json({ 
-    message: 'NatureEstate API Server',
-    version: '1.0.0',
-    status: 'running',
-    timestamp: new Date().toISOString()
-  });
-});
+// app.get('/api', (req, res) => {
+//   res.json({ 
+//     message: 'NatureEstate API Server',
+//     version: '1.0.0',
+//     status: 'running',
+//     timestamp: new Date().toISOString()
+//   });
+// });
 
 // Catch-all route for SPA routing (must be last)
 app.get('*', (req, res) => {
