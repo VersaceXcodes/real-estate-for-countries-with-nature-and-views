@@ -2807,10 +2807,10 @@ app.use((error, req, res, next) => {
 // ==================== DEFAULT ROUTES ====================
 
 /*
-Root endpoint
+API status endpoint
 Returns basic server information
 */
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({ 
     message: 'NatureEstate API Server',
     version: '1.0.0',
