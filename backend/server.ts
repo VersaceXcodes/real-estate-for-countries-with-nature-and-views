@@ -1,11 +1,11 @@
-import express from 'express';
-import cors from 'cors';
+import * as express from 'express';
+import * as cors from 'cors';
 import * as dotenv from 'dotenv';
 import { existsSync, mkdirSync } from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import * as jwt from 'jsonwebtoken';
-import morgan from 'morgan';
+import * as morgan from 'morgan';
 import { v4 as uuidv4 } from 'uuid';
 import multer from 'multer';
 
@@ -19,8 +19,7 @@ declare global {
 }
 
 // Import PostgreSQL
-import pkg from 'pg';
-const { Pool } = pkg;
+import { Pool } from 'pg';
 
 dotenv.config();
 
@@ -59,7 +58,7 @@ const pool = new Pool(
       }
 );
 
-const app = express();
+const app = express.default();
 
 // ESM workaround for __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -93,7 +92,7 @@ const allowedOrigins = [
   'http://localhost:3000'
 ].filter(Boolean);
 
-app.use(cors({
+app.use(cors.default({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
@@ -115,14 +114,14 @@ app.use(cors({
   exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
   maxAge: 86400 // 24 hours
 }));
-app.use(express.json({ limit: '10mb' }));
-app.use(morgan('combined'));
+app.use(express.default.json({ limit: '10mb' }));
+app.use(morgan.default('combined'));
 
 // Serve static files from the Vite build directory
-app.use(express.static(path.join(__dirname, '../vitereact/dist')));
+app.use(express.default.static(path.join(__dirname, '../vitereact/dist')));
 
-// Serve storage files
-app.use('/storage', express.static(storageDir));
+// Serve uploaded files
+app.use('/storage', express.default.static(storageDir));
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -855,7 +854,7 @@ Supports anonymous access with optional user context
 app.get('/properties', optionalAuth, async (req, res) => {
   try {
     // Pre-process query parameters to ensure proper coercion
-    const processedQuery = { ...req.query };
+    const processedQuery: any = { ...req.query };
     
     // Coerce numeric parameters
     ['limit', 'offset', 'price_min', 'price_max', 'bedrooms_min', 'bathrooms_min', 
