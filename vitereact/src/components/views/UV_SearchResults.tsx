@@ -559,7 +559,7 @@ const UV_SearchResults: React.FC = () => {
                     <div>
                       <p className="text-red-800 font-medium">Error loading properties</p>
                       <p className="text-red-600 text-sm mt-1">
-                        {error?.response?.data?.message || error?.message || 'Please try again or adjust your search criteria.'}
+                        {(error as any)?.response?.data?.message || error?.message || 'Please try again or adjust your search criteria.'}
                       </p>
                       <button
                         onClick={() => window.location.reload()}

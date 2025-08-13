@@ -93,15 +93,19 @@ const GV_TopNav: React.FC = () => {
   const logoutUser = useAppStore(state => state.logout_user);
 
   // React Query for countries data with fallback
-  const { data: availableCountries = [], error: countriesError } = useQuery({
+  const { data: availableCountries = [], error: countriesError } = useQuery<CountryData[]>({
     queryKey: ['countries'],
     queryFn: fetchCountriesData,
     staleTime: 10 * 60 * 1000, // 10 minutes
-    retry: 1,
-    onError: (error) => {
-      console.warn('Failed to fetch countries for navigation:', error);
-    }
+    retry: 1
   });
+
+  // Log errors if they occur
+  useEffect(() => {
+    if (countriesError) {
+      console.warn('Failed to fetch countries for navigation:', countriesError);
+    }
+  }, [countriesError]);
 
   // Fallback countries when API fails
   const fallbackCountries = [

@@ -68,10 +68,7 @@ const UV_Landing: React.FC = () => {
     queryFn: fetchFeaturedProperties,
     retry: 1,
     staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    onError: (error) => {
-      console.warn('Failed to fetch featured properties:', error);
-    }
+    refetchOnWindowFocus: false
   });
 
   // All properties query for countries aggregation with better error handling
@@ -84,11 +81,18 @@ const UV_Landing: React.FC = () => {
     queryFn: fetchAllActiveProperties,
     retry: 1,
     staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    onError: (error) => {
-      console.warn('Failed to fetch countries data:', error);
-    }
+    refetchOnWindowFocus: false
   });
+
+  // Log errors if they occur
+  useEffect(() => {
+    if (featuredError) {
+      console.warn('Failed to fetch featured properties:', featuredError);
+    }
+    if (countriesError) {
+      console.warn('Failed to fetch countries data:', countriesError);
+    }
+  }, [featuredError, countriesError]);
 
   // Process countries data with fallback
   useEffect(() => {
