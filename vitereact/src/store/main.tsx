@@ -436,14 +436,9 @@ export const useAppStore = create<AppState>()(
       },
 
       clear_auth_error: () => {
-        set(() => ({
+        set((state) => ({
           authentication_state: {
-            current_user: null,
-            auth_token: null,
-            authentication_status: {
-              is_authenticated: false,
-              is_loading: false,
-            },
+            ...state.authentication_state,
             error_message: null,
           },
         }));

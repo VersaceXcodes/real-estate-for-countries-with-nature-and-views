@@ -206,8 +206,11 @@ const UV_SearchResults: React.FC = () => {
   // Update search criteria in global store and record search history
   useEffect(() => {
     updateSearchCriteria(activeCriteria);
-    
-    if (searchResults) {
+  }, [activeCriteria, updateSearchCriteria]);
+
+  // Record search history when results change (separate effect to avoid infinite loops)
+  useEffect(() => {
+    if (searchResults && !recordSearchMutation.isPending) {
       recordSearchMutation.mutate({
         user_id: currentUser?.user_id,
         session_id: 'session_' + Date.now(), // Simple session ID
@@ -215,7 +218,7 @@ const UV_SearchResults: React.FC = () => {
         results_count: searchResults.total_count,
       });
     }
-  }, [activeCriteria, searchResults, currentUser, updateSearchCriteria, recordSearchMutation]);
+  }, [searchResults?.total_count, currentUser?.user_id]);
 
   // Helper functions
   const updateFilters = (newFilters: Partial<SearchCriteria>) => {
@@ -611,16 +614,25 @@ const UV_SearchResults: React.FC = () => {
                               )}
                             </div>
                             
-                            {property.natural_features && (
-                              <div className="flex flex-wrap gap-1 mb-3">
-                                {JSON.parse(property.natural_features || '[]').slice(0, 2).map((feature: string, index: number) => (
-                                  <span key={index} className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                                    {feature}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                            
+                             {property.natural_features && (
+                               <div className="flex flex-wrap gap-1 mb-3">
+                                 {(() => {
+                                   try {
+                                     return JSON.parse(property.natural_features || '[]').slice(0, 2).map((feature: string, index: number) => (
+                                       <span key={index} className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                                         {feature}
+                                       </span>
+                                     ));
+                                   } catch {
+                                     return property.natural_features.split(',').slice(0, 2).map((feature: string, index: number) => (
+                                       <span key={index} className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                                         {feature.trim()}
+                                       </span>
+                                     ));
+                                   }
+                                 })()}
+                               </div>
+                             )}                            
                             <Link
                               to={`/property/${property.property_id}`}
                               className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"

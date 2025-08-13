@@ -47,10 +47,10 @@ export const updateUserInputSchema = z.object({
 export const searchUsersInputSchema = z.object({
   query: z.string().optional(),
   user_type: z.enum(['buyer', 'seller', 'agent', 'admin']).optional(),
-  is_verified: z.boolean().optional(),
-  email_verified: z.boolean().optional(),
-  limit: z.number().int().positive().default(10),
-  offset: z.number().int().nonnegative().default(0),
+  is_verified: z.coerce.boolean().optional(),
+  email_verified: z.coerce.boolean().optional(),
+  limit: z.coerce.number().int().positive().default(10),
+  offset: z.coerce.number().int().nonnegative().default(0),
   sort_by: z.enum(['name', 'email', 'created_at', 'last_login_at']).default('created_at'),
   sort_order: z.enum(['asc', 'desc']).default('desc')
 });
@@ -163,22 +163,22 @@ export const searchPropertiesInputSchema = z.object({
   city: z.string().optional(),
   property_type: z.enum(['villa', 'cabin', 'condominium', 'farm', 'land', 'mansion', 'house', 'apartment', 'commercial']).optional(),
   status: z.enum(['active', 'inactive', 'sold', 'pending', 'withdrawn']).default('active'),
-  price_min: z.number().nonnegative().optional(),
-  price_max: z.number().positive().optional(),
-  bedrooms_min: z.number().int().nonnegative().optional(),
-  bathrooms_min: z.number().int().nonnegative().optional(),
-  square_footage_min: z.number().positive().optional(),
-  square_footage_max: z.number().positive().optional(),
-  land_size_min: z.number().positive().optional(),
-  land_size_max: z.number().positive().optional(),
-  year_built_min: z.number().int().optional(),
-  year_built_max: z.number().int().optional(),
+  price_min: z.coerce.number().nonnegative().optional(),
+  price_max: z.coerce.number().positive().optional(),
+  bedrooms_min: z.coerce.number().int().nonnegative().optional(),
+  bathrooms_min: z.coerce.number().int().nonnegative().optional(),
+  square_footage_min: z.coerce.number().positive().optional(),
+  square_footage_max: z.coerce.number().positive().optional(),
+  land_size_min: z.coerce.number().positive().optional(),
+  land_size_max: z.coerce.number().positive().optional(),
+  year_built_min: z.coerce.number().int().optional(),
+  year_built_max: z.coerce.number().int().optional(),
   natural_features: z.string().optional(),
   outdoor_amenities: z.string().optional(),
   location_text: z.string().optional(),
-  is_featured: z.boolean().optional(),
-  limit: z.number().int().positive().default(20),
-  offset: z.number().int().nonnegative().default(0),
+  is_featured: z.coerce.boolean().optional(),
+  limit: z.coerce.number().int().positive().default(20),
+  offset: z.coerce.number().int().nonnegative().default(0),
   sort_by: z.enum(['price', 'created_at', 'view_count', 'title', 'square_footage']).default('created_at'),
   sort_order: z.enum(['asc', 'desc']).default('desc')
 });
@@ -262,11 +262,11 @@ export const searchPropertyInquiriesInputSchema = z.object({
   sender_user_id: z.string().optional(),
   status: z.enum(['unread', 'read', 'responded', 'archived']).optional(),
   priority: z.enum(['low', 'normal', 'high']).optional(),
-  is_interested_in_viewing: z.boolean().optional(),
+  is_interested_in_viewing: z.coerce.boolean().optional(),
   date_from: z.string().optional(),
   date_to: z.string().optional(),
-  limit: z.number().int().positive().default(10),
-  offset: z.number().int().nonnegative().default(0),
+  limit: z.coerce.number().int().positive().default(10),
+  offset: z.coerce.number().int().nonnegative().default(0),
   sort_by: z.enum(['created_at', 'priority', 'status']).default('created_at'),
   sort_order: z.enum(['asc', 'desc']).default('desc')
 });
@@ -383,23 +383,23 @@ export const searchHistorySchema = z.object({
 });
 
 export const createSearchHistoryInputSchema = z.object({
-  user_id: z.string().nullable(),
-  session_id: z.string().nullable(),
-  country: z.string().max(100).nullable(),
-  property_type: z.enum(['villa', 'cabin', 'condominium', 'farm', 'land', 'mansion', 'house', 'apartment', 'commercial']).nullable(),
-  price_min: z.number().nonnegative().nullable(),
-  price_max: z.number().positive().nullable(),
-  bedrooms_min: z.number().int().nonnegative().nullable(),
-  bathrooms_min: z.number().int().nonnegative().nullable(),
-  square_footage_min: z.number().positive().nullable(),
-  square_footage_max: z.number().positive().nullable(),
-  land_size_min: z.number().positive().nullable(),
-  land_size_max: z.number().positive().nullable(),
-  natural_features: z.string().nullable(),
-  outdoor_amenities: z.string().nullable(),
-  location_text: z.string().max(500).nullable(),
-  sort_by: z.string().max(50).nullable(),
-  results_count: z.number().int().nonnegative().nullable()
+  user_id: z.string().nullable().optional(),
+  session_id: z.string().nullable().optional(),
+  country: z.string().max(100).nullable().optional(),
+  property_type: z.enum(['villa', 'cabin', 'condominium', 'farm', 'land', 'mansion', 'house', 'apartment', 'commercial']).nullable().optional(),
+  price_min: z.coerce.number().nonnegative().nullable().optional(),
+  price_max: z.coerce.number().positive().nullable().optional(),
+  bedrooms_min: z.coerce.number().int().nonnegative().nullable().optional(),
+  bathrooms_min: z.coerce.number().int().nonnegative().nullable().optional(),
+  square_footage_min: z.coerce.number().positive().nullable().optional(),
+  square_footage_max: z.coerce.number().positive().nullable().optional(),
+  land_size_min: z.coerce.number().positive().nullable().optional(),
+  land_size_max: z.coerce.number().positive().nullable().optional(),
+  natural_features: z.string().nullable().optional(),
+  outdoor_amenities: z.string().nullable().optional(),
+  location_text: z.string().max(500).nullable().optional(),
+  sort_by: z.string().max(50).nullable().optional(),
+  results_count: z.coerce.number().int().nonnegative().nullable().optional()
 });
 
 // ==================== NOTIFICATIONS ====================
@@ -443,12 +443,12 @@ export const updateNotificationInputSchema = z.object({
 export const searchNotificationsInputSchema = z.object({
   user_id: z.string().optional(),
   type: z.enum(['inquiry', 'saved_search', 'property_update', 'system', 'marketing']).optional(),
-  is_read: z.boolean().optional(),
+  is_read: z.coerce.boolean().optional(),
   priority: z.enum(['low', 'normal', 'high']).optional(),
   date_from: z.string().optional(),
   date_to: z.string().optional(),
-  limit: z.number().int().positive().default(20),
-  offset: z.number().int().nonnegative().default(0),
+  limit: z.coerce.number().int().positive().default(20),
+  offset: z.coerce.number().int().nonnegative().default(0),
   sort_by: z.enum(['created_at', 'priority', 'type']).default('created_at'),
   sort_order: z.enum(['asc', 'desc']).default('desc')
 });
@@ -537,8 +537,8 @@ export const searchPropertyAnalyticsInputSchema = z.object({
   property_id: z.string().optional(),
   date_from: z.string().optional(),
   date_to: z.string().optional(),
-  limit: z.number().int().positive().default(30),
-  offset: z.number().int().nonnegative().default(0),
+  limit: z.coerce.number().int().positive().default(30),
+  offset: z.coerce.number().int().nonnegative().default(0),
   sort_by: z.enum(['date', 'views_count', 'inquiries_count', 'favorites_count']).default('date'),
   sort_order: z.enum(['asc', 'desc']).default('desc')
 });
@@ -595,9 +595,9 @@ export const updateSystemSettingInputSchema = z.object({
 
 export const searchSystemSettingsInputSchema = z.object({
   query: z.string().optional(),
-  is_public: z.boolean().optional(),
-  limit: z.number().int().positive().default(50),
-  offset: z.number().int().nonnegative().default(0),
+  is_public: z.coerce.boolean().optional(),
+  limit: z.coerce.number().int().positive().default(50),
+  offset: z.coerce.number().int().nonnegative().default(0),
   sort_by: z.enum(['setting_key', 'created_at', 'updated_at']).default('setting_key'),
   sort_order: z.enum(['asc', 'desc']).default('asc')
 });

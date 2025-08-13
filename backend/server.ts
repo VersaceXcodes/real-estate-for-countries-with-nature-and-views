@@ -1598,8 +1598,8 @@ app.get('/properties/:property_id/inquiries', authenticateToken, async (req, res
   try {
     const { property_id } = req.params;
     const { status, limit = 10, offset = 0 } = req.query;
-    const limitNum = parseInt(String(limit));
-    const offsetNum = parseInt(String(offset));
+    const limitNum = Math.max(1, Math.min(100, parseInt(String(limit)) || 10));
+    const offsetNum = Math.max(0, parseInt(String(offset)) || 0);
     
     const client = await pool.connect();
     

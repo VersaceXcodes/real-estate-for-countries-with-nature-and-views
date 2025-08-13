@@ -118,17 +118,22 @@ const UV_PropertyDetails: React.FC = () => {
   };
 
   const trackPropertyView = useCallback(async (propertyId: string) => {
-    await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/properties/${propertyId}/view`,
-      {
-        user_id: currentUser?.user_id || null,
-        session_id: sessionStorage.getItem('session_id') || null,
-        referrer_url: document.referrer || null,
-        ip_address: null,
-        user_agent: navigator.userAgent,
-        view_duration_seconds: null
-      }
-    );
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/properties/${propertyId}/view`,
+        {
+          user_id: currentUser?.user_id || null,
+          session_id: sessionStorage.getItem('session_id') || null,
+          referrer_url: document.referrer || null,
+          ip_address: null,
+          user_agent: navigator.userAgent,
+          view_duration_seconds: null
+        }
+      );
+    } catch (error) {
+      // Silently fail view tracking to not disrupt user experience
+      console.warn('Failed to track property view:', error);
+    }
   }, [currentUser?.user_id]);
 
   const submitInquiry = async (data: any) => {

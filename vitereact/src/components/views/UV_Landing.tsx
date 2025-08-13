@@ -347,14 +347,27 @@ const UV_Landing: React.FC = () => {
                     
                     {property.natural_features && (
                       <div className="flex flex-wrap gap-1 mb-3">
-                        {JSON.parse(property.natural_features).slice(0, 2).map((feature: string, index: number) => (
-                          <span
-                            key={index}
-                            className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"
-                          >
-                            {feature}
-                          </span>
-                        ))}
+                        {(() => {
+                          try {
+                            return JSON.parse(property.natural_features).slice(0, 2).map((feature: string, index: number) => (
+                              <span
+                                key={index}
+                                className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"
+                              >
+                                {feature}
+                              </span>
+                            ));
+                          } catch {
+                            return property.natural_features.split(',').slice(0, 2).map((feature: string, index: number) => (
+                              <span
+                                key={index}
+                                className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"
+                              >
+                                {feature.trim()}
+                              </span>
+                            ));
+                          }
+                        })()}
                       </div>
                     )}
                     
