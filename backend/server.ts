@@ -2844,19 +2844,6 @@ app.use((error, req, res, next) => {
 // ==================== DEFAULT ROUTES ====================
 
 /*
-API status endpoint
-Returns basic server information
-*/
-app.get('/api', (req, res) => {
-  res.json({ 
-    message: 'NatureEstate API Server',
-    version: '1.0.0',
-    status: 'running',
-    timestamp: new Date().toISOString()
-  });
-});
-
-/*
 Health check endpoint
 Returns server health status
 */
