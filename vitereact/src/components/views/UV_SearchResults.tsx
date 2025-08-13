@@ -140,15 +140,27 @@ const UV_SearchResults: React.FC = () => {
     const params = new URLSearchParams();
     
     Object.entries(criteria).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
+      if (value !== undefined && value !== null && value !== '') {
         params.append(key, value.toString());
       }
     });
 
-    const { data } = await axios.get(
-      `${ENV_CONFIG.API_BASE_URL}/properties?${params.toString()}`
-    );
-    return data;
+    try {
+      const { data } = await axios.get(
+        `${ENV_CONFIG.API_BASE_URL}/properties?${params.toString()}`,
+        {
+          timeout: 30000, // 30 second timeout
+        }
+      );
+      return data;
+    } catch (error) {
+      console.error('Property search error:', error);
+      // Re-throw with better error handling
+      if (error.response?.status === 500) {
+        throw new Error('Server error occurred. Please try again or adjust your search criteria.');
+      }
+      throw error;
+    }
   };
 
   const saveSearch = async (request: SavedSearchRequest) => {
@@ -184,10 +196,18 @@ const UV_SearchResults: React.FC = () => {
   };
 
   // React Query hooks
-  const { data: searchResults, isLoading, error } = useQuery({
+  const { data: searchResults, isLoading, error, isFetching } = useQuery({
     queryKey: ['properties', activeCriteria],
     queryFn: () => fetchProperties(activeCriteria),
     enabled: true,
+    staleTime: 30000, // Consider data fresh for 30 seconds
+    retry: (failureCount, error) => {
+      // Don't retry on 4xx errors (client errors)
+      if (error?.response?.status >= 400 && error?.response?.status < 500) {
+        return false;
+      }
+      return failureCount < 2;
+    },
   });
 
   const saveSearchMutation = useMutation({
@@ -215,11 +235,13 @@ const UV_SearchResults: React.FC = () => {
   });
 
   // Update search criteria in global store (memoized to prevent infinite loops)
+  const activeCriteriaString = JSON.stringify(activeCriteria);
   useEffect(() => {
     updateSearchCriteria(activeCriteria);
-  }, [JSON.stringify(activeCriteria), updateSearchCriteria]);
+  }, [activeCriteriaString, updateSearchCriteria, activeCriteria]);
 
   // Record search history when results change (separate effect to avoid infinite loops)
+  const activeCriteriaForHistory = JSON.stringify(activeCriteria);
   useEffect(() => {
     if (searchResults && !recordSearchMutation.isPending) {
       // Use a stable session ID to avoid recording duplicate searches
@@ -243,7 +265,7 @@ const UV_SearchResults: React.FC = () => {
         });
       }
     }
-  }, [searchResults?.total_count, currentUser?.user_id, JSON.stringify(activeCriteria)]);
+  }, [searchResults?.total_count, currentUser?.user_id, activeCriteriaForHistory, searchResults, recordSearchMutation, activeCriteria]);
 
   // Helper functions
   const updateFilters = (newFilters: Partial<SearchCriteria>) => {
@@ -325,8 +347,11 @@ const UV_SearchResults: React.FC = () => {
 
   const currentPage = searchResults?.page || Math.floor((activeCriteria.offset || 0) / (activeCriteria.limit || 20)) + 1;
   const totalPages = searchResults?.total_pages || Math.ceil((searchResults?.total_count || 0) / (activeCriteria.limit || 20));
-  const totalResults = searchResults?.total_count || 0;
+  const totalResults = searchResults?.total_count ?? 0;
   const properties = searchResults?.properties || [];
+  
+  // Show loading state properly
+  const isSearching = isLoading || isFetching;
 
   return (
     <>
@@ -337,7 +362,7 @@ const UV_SearchResults: React.FC = () => {
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div className="flex-1">
                 <h1 className="text-2xl font-bold text-gray-900">
-                  {isLoading ? 'Searching...' : `${totalResults.toLocaleString()} Properties Found`}
+                  {isSearching ? 'Searching properties...' : `${totalResults.toLocaleString()} Properties Found`}
                 </h1>
                 
                 {/* Active Filters */}
@@ -550,7 +575,7 @@ const UV_SearchResults: React.FC = () => {
               </div>
 
               {/* Loading State */}
-              {isLoading && (
+              {isSearching && (
                 <div className="flex items-center justify-center py-12">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                   <span className="ml-2 text-gray-600">Searching properties...</span>
@@ -558,7 +583,7 @@ const UV_SearchResults: React.FC = () => {
               )}
 
               {/* Error State */}
-              {error && (
+              {error && !isSearching && (
                 <div className="bg-red-50 border border-red-200 rounded-md p-4">
                   <div className="flex items-center">
                     <svg className="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -567,7 +592,7 @@ const UV_SearchResults: React.FC = () => {
                     <div>
                       <p className="text-red-800 font-medium">Error loading properties</p>
                       <p className="text-red-600 text-sm mt-1">
-                        {(error as any)?.response?.data?.message || error?.message || 'Please try again or adjust your search criteria.'}
+                        {(error as any)?.response?.data?.message || (error as any)?.response?.data?.details || error?.message || 'Please try again or adjust your search criteria.'}
                       </p>
                       <button
                         onClick={() => window.location.reload()}
@@ -581,7 +606,7 @@ const UV_SearchResults: React.FC = () => {
               )}
 
               {/* No Results */}
-              {!isLoading && !error && properties.length === 0 && (
+              {!isSearching && !error && properties.length === 0 && (
                 <div className="text-center py-12">
                   <div className="max-w-md mx-auto">
                     <h3 className="text-lg font-medium text-gray-900 mb-2">No properties found</h3>
@@ -605,7 +630,7 @@ const UV_SearchResults: React.FC = () => {
               )}
 
               {/* Property Results */}
-              {!isLoading && !error && properties.length > 0 && (
+              {!isSearching && !error && properties.length > 0 && (
                 <>
                   {/* Grid View */}
                   {viewMode === 'grid' && (

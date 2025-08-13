@@ -860,22 +860,28 @@ app.get('/properties', optionalAuth, async (req, res) => {
     ['limit', 'offset', 'price_min', 'price_max', 'bedrooms_min', 'bathrooms_min', 
      'square_footage_min', 'square_footage_max', 'land_size_min', 'land_size_max',
      'year_built_min', 'year_built_max'].forEach(param => {
-      if (processedQuery[param] && processedQuery[param] !== '') {
+      if (processedQuery[param] !== undefined && processedQuery[param] !== null && processedQuery[param] !== '') {
         const num = Number(processedQuery[param]);
-        if (!isNaN(num) && isFinite(num)) {
+        if (!isNaN(num) && isFinite(num) && num >= 0) {
           processedQuery[param] = num;
         } else {
           // Remove invalid numeric values instead of failing
           delete processedQuery[param];
         }
+      } else if (processedQuery[param] === '') {
+        // Remove empty string values
+        delete processedQuery[param];
       }
     });
     
     // Coerce boolean parameters with better error handling
     ['is_featured'].forEach(param => {
-      if (processedQuery[param] && processedQuery[param] !== '') {
+      if (processedQuery[param] !== undefined && processedQuery[param] !== null && processedQuery[param] !== '') {
         const val = String(processedQuery[param]).toLowerCase();
         processedQuery[param] = val === 'true' || val === '1' || val === 'yes';
+      } else if (processedQuery[param] === '') {
+        // Remove empty string values
+        delete processedQuery[param];
       }
     });
     
@@ -887,7 +893,19 @@ app.get('/properties', optionalAuth, async (req, res) => {
       processedQuery.offset = 0;
     }
     
-    const validatedData = searchPropertiesInputSchema.parse(processedQuery);
+    // Validate with better error handling
+    let validatedData;
+    try {
+      validatedData = searchPropertiesInputSchema.parse(processedQuery);
+    } catch (validationError) {
+      console.error('Search validation error:', validationError);
+      // Return a more user-friendly error for validation issues
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid search parameters. Please check your filters and try again.',
+        details: validationError.errors?.map(e => `${e.path.join('.')}: ${e.message}`).join(', ') || 'Validation failed'
+      });
+    }
     
     const client = await pool.connect();
     
