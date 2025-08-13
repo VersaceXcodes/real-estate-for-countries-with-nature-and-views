@@ -223,13 +223,19 @@ const UV_PropertyDetails: React.FC = () => {
     }
   }, [propertyPhotos]);
 
-  // Track view after 3 seconds
+  // Track view after 3 seconds (only once per property)
   useEffect(() => {
     if (property_id) {
-      const timer = setTimeout(() => {
-        trackPropertyView(property_id);
-      }, 3000);
-      return () => clearTimeout(timer);
+      const viewedKey = `viewed_${property_id}`;
+      const hasViewed = sessionStorage.getItem(viewedKey);
+      
+      if (!hasViewed) {
+        const timer = setTimeout(() => {
+          trackPropertyView(property_id);
+          sessionStorage.setItem(viewedKey, 'true');
+        }, 3000);
+        return () => clearTimeout(timer);
+      }
     }
   }, [property_id, trackPropertyView]);
 

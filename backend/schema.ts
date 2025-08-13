@@ -177,7 +177,7 @@ export const searchPropertiesInputSchema = z.object({
   outdoor_amenities: z.string().optional(),
   location_text: z.string().optional(),
   is_featured: z.coerce.boolean().optional(),
-  limit: z.coerce.number().int().positive().default(20),
+  limit: z.coerce.number().int().positive().max(100).default(20),
   offset: z.coerce.number().int().nonnegative().default(0),
   sort_by: z.enum(['price', 'created_at', 'view_count', 'title', 'square_footage']).default('created_at'),
   sort_order: z.enum(['asc', 'desc']).default('desc')
@@ -237,12 +237,12 @@ export const propertyInquirySchema = z.object({
 });
 
 export const createPropertyInquiryInputSchema = z.object({
-  property_id: z.string(),
-  sender_user_id: z.string().nullable(),
-  recipient_user_id: z.string(),
+  property_id: z.string().optional(), // Will be set from URL params
+  sender_user_id: z.string().nullable().optional(),
+  recipient_user_id: z.string().optional(), // Will be derived from property
   sender_name: z.string().min(1).max(255),
   sender_email: z.string().email(),
-  sender_phone: z.string().max(50).nullable(),
+  sender_phone: z.string().max(50).nullable().optional(),
   message: z.string().min(1).max(2000),
   is_interested_in_viewing: z.boolean().default(false),
   wants_similar_properties: z.boolean().default(false),
@@ -399,7 +399,7 @@ export const createSearchHistoryInputSchema = z.object({
   outdoor_amenities: z.string().nullable().optional(),
   location_text: z.string().max(500).nullable().optional(),
   sort_by: z.string().max(50).nullable().optional(),
-  results_count: z.coerce.number().int().nonnegative().nullable().optional()
+  results_count: z.coerce.number().int().nonnegative().nullable().optional().default(0)
 });
 
 // ==================== NOTIFICATIONS ====================
@@ -468,13 +468,13 @@ export const propertyViewSchema = z.object({
 });
 
 export const createPropertyViewInputSchema = z.object({
-  property_id: z.string(),
-  user_id: z.string().nullable(),
-  session_id: z.string().nullable(),
-  ip_address: z.string().max(45).nullable(),
-  user_agent: z.string().max(500).nullable(),
-  referrer_url: z.string().url().nullable(),
-  view_duration_seconds: z.number().int().positive().nullable()
+  property_id: z.string().optional(), // Will be set from URL params
+  user_id: z.string().nullable().optional(),
+  session_id: z.string().nullable().optional(),
+  ip_address: z.string().max(45).nullable().optional(),
+  user_agent: z.string().max(500).nullable().optional(),
+  referrer_url: z.string().url().nullable().optional(),
+  view_duration_seconds: z.number().int().positive().nullable().optional()
 });
 
 // ==================== USER SESSIONS ====================

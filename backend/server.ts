@@ -854,7 +854,29 @@ Supports anonymous access with optional user context
 */
 app.get('/properties', optionalAuth, async (req, res) => {
   try {
-    const validatedData = searchPropertiesInputSchema.parse(req.query);
+    // Pre-process query parameters to ensure proper coercion
+    const processedQuery = { ...req.query };
+    
+    // Coerce numeric parameters
+    ['limit', 'offset', 'price_min', 'price_max', 'bedrooms_min', 'bathrooms_min', 
+     'square_footage_min', 'square_footage_max', 'land_size_min', 'land_size_max',
+     'year_built_min', 'year_built_max'].forEach(param => {
+      if (processedQuery[param] && processedQuery[param] !== '') {
+        const num = Number(processedQuery[param]);
+        if (!isNaN(num)) {
+          processedQuery[param] = num;
+        }
+      }
+    });
+    
+    // Coerce boolean parameters
+    ['is_featured'].forEach(param => {
+      if (processedQuery[param] && processedQuery[param] !== '') {
+        processedQuery[param] = processedQuery[param] === 'true' || processedQuery[param] === '1';
+      }
+    });
+    
+    const validatedData = searchPropertiesInputSchema.parse(processedQuery);
     
     const client = await pool.connect();
     
@@ -1334,7 +1356,10 @@ Records property view for analytics
 app.post('/properties/:property_id/view', optionalAuth, async (req, res) => {
   try {
     const { property_id } = req.params;
-    const validatedData = createPropertyViewInputSchema.parse(req.body);
+    const validatedData = createPropertyViewInputSchema.parse({ 
+      ...req.body, 
+      property_id 
+    });
     
     const client = await pool.connect();
     
@@ -1671,7 +1696,10 @@ Creates new inquiry for property (supports anonymous users)
 app.post('/properties/:property_id/inquiries', optionalAuth, async (req, res) => {
   try {
     const { property_id } = req.params;
-    const validatedData = createPropertyInquiryInputSchema.parse(req.body);
+    const validatedData = createPropertyInquiryInputSchema.parse({ 
+      ...req.body, 
+      property_id 
+    });
     
     const client = await pool.connect();
     
@@ -2839,6 +2867,49 @@ app.use((error, req, res, next) => {
   }
   
   res.status(500).json({ success: false, message: 'Internal server error' });
+});
+
+// ==================== SEARCH HISTORY ROUTES ====================
+
+/*
+Create search history endpoint
+Records user search activity
+*/
+app.post('/search-history', async (req, res) => {
+  try {
+    const validatedData = createSearchHistoryInputSchema.parse(req.body);
+    
+    const client = await pool.connect();
+    
+    const searchHistoryId = uuidv4();
+    const result = await client.query(
+      `INSERT INTO search_history (
+        search_history_id, user_id, session_id, country, property_type, price_min, price_max,
+        bedrooms_min, bathrooms_min, square_footage_min, square_footage_max, land_size_min, land_size_max,
+        natural_features, outdoor_amenities, location_text, sort_by, results_count, created_at
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+      RETURNING *`,
+      [
+        searchHistoryId, validatedData.user_id, validatedData.session_id, validatedData.country,
+        validatedData.property_type, validatedData.price_min, validatedData.price_max,
+        validatedData.bedrooms_min, validatedData.bathrooms_min, validatedData.square_footage_min,
+        validatedData.square_footage_max, validatedData.land_size_min, validatedData.land_size_max,
+        validatedData.natural_features, validatedData.outdoor_amenities, validatedData.location_text,
+        validatedData.sort_by, validatedData.results_count, new Date().toISOString()
+      ]
+    );
+    
+    client.release();
+    
+    res.status(201).json(result.rows[0]);
+    
+  } catch (error) {
+    console.error('Create search history error:', error);
+    if (error.name === 'ZodError') {
+      return res.status(400).json({ success: false, message: 'Invalid search history data', errors: error.errors });
+    }
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
 });
 
 // ==================== DEFAULT ROUTES ====================

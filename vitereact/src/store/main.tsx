@@ -24,12 +24,24 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Handle different types of errors
     if (error.code === 'ECONNABORTED') {
       error.message = 'Request timeout. Please check your connection and try again.';
     } else if (error.code === 'ERR_NETWORK') {
       error.message = 'Network error. Please check your internet connection.';
     } else if (!error.response) {
       error.message = 'Unable to connect to server. Please try again later.';
+    } else if (error.response?.status === 401) {
+      // Handle unauthorized errors by clearing auth state
+      const store = useAppStore.getState();
+      if (store.authentication_state.auth_token) {
+        store.logout_user();
+      }
+    } else if (error.response?.status >= 500) {
+      error.message = 'Server error. Please try again later.';
+    } else if (error.response?.status === 400) {
+      // Keep the original error message for 400 errors as they're usually validation errors
+      error.message = error.response.data?.message || 'Invalid request. Please check your input.';
     }
     return Promise.reject(error);
   }

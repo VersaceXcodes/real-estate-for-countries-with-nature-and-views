@@ -169,11 +169,17 @@ const UV_SearchResults: React.FC = () => {
   };
 
   const recordSearch = async (request: SearchHistoryRequest) => {
-    const { data } = await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/search-history`,
-      request
-    );
-    return data;
+    try {
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/search-history`,
+        request
+      );
+      return data;
+    } catch (error) {
+      // Silently fail search history recording to not disrupt user experience
+      console.warn('Failed to record search history:', error);
+      return null;
+    }
   };
 
   // React Query hooks
@@ -201,6 +207,10 @@ const UV_SearchResults: React.FC = () => {
 
   const recordSearchMutation = useMutation({
     mutationFn: recordSearch,
+    onError: (error) => {
+      // Silently handle search history recording errors
+      console.warn('Failed to record search history:', error);
+    }
   });
 
   // Update search criteria in global store and record search history
@@ -211,14 +221,21 @@ const UV_SearchResults: React.FC = () => {
   // Record search history when results change (separate effect to avoid infinite loops)
   useEffect(() => {
     if (searchResults && !recordSearchMutation.isPending) {
+      // Use a stable session ID to avoid recording duplicate searches
+      const sessionId = sessionStorage.getItem('search_session_id') || (() => {
+        const id = 'session_' + Date.now();
+        sessionStorage.setItem('search_session_id', id);
+        return id;
+      })();
+      
       recordSearchMutation.mutate({
         user_id: currentUser?.user_id,
-        session_id: 'session_' + Date.now(), // Simple session ID
+        session_id: sessionId,
         ...activeCriteria,
         results_count: searchResults.total_count,
       });
     }
-  }, [searchResults?.total_count, currentUser?.user_id]);
+  }, [searchResults?.total_count, currentUser?.user_id, recordSearchMutation]);
 
   // Helper functions
   const updateFilters = (newFilters: Partial<SearchCriteria>) => {
@@ -535,7 +552,23 @@ const UV_SearchResults: React.FC = () => {
               {/* Error State */}
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-md p-4">
-                  <p className="text-red-800">Error loading properties. Please try again.</p>
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                    <div>
+                      <p className="text-red-800 font-medium">Error loading properties</p>
+                      <p className="text-red-600 text-sm mt-1">
+                        {error?.response?.data?.message || error?.message || 'Please try again or adjust your search criteria.'}
+                      </p>
+                      <button
+                        onClick={() => window.location.reload()}
+                        className="mt-2 text-sm text-red-600 hover:text-red-800 underline"
+                      >
+                        Refresh page
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
 
