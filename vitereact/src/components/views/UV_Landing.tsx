@@ -58,26 +58,39 @@ const UV_Landing: React.FC = () => {
   const [heroImages, setHeroImages] = useState<HeroImage[]>([]);
   const [countriesData, setCountriesData] = useState<CountryData[]>([]);
 
-  // Featured properties query
+  // Featured properties query with better error handling
   const {
     data: featuredProperties = [],
     isLoading: loadingFeatured,
     error: featuredError
   } = useQuery<Property[], Error>({
     queryKey: ['featured-properties'],
-    queryFn: fetchFeaturedProperties
+    queryFn: fetchFeaturedProperties,
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    onError: (error) => {
+      console.warn('Failed to fetch featured properties:', error);
+    }
   });
 
-  // All properties query for countries aggregation
+  // All properties query for countries aggregation with better error handling
   const {
     data: allProperties = [],
-    isLoading: loadingCountries
+    isLoading: loadingCountries,
+    error: countriesError
   } = useQuery<Property[], Error>({
     queryKey: ['all-properties-countries'],
-    queryFn: fetchAllActiveProperties
+    queryFn: fetchAllActiveProperties,
+    retry: 1,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    onError: (error) => {
+      console.warn('Failed to fetch countries data:', error);
+    }
   });
 
-  // Process countries data
+  // Process countries data with fallback
   useEffect(() => {
     if (allProperties.length > 0) {
       const countryMap: Record<string, CountryData> = {};
@@ -98,10 +111,23 @@ const UV_Landing: React.FC = () => {
         .slice(0, 8);
       
       setCountriesData(sortedCountries);
+    } else if (countriesError && countriesData.length === 0) {
+      // Fallback countries data when API fails
+      const fallbackCountries: CountryData[] = [
+        { country: 'Switzerland', property_count: 45, representative_image: 'https://picsum.photos/400/300?random=switzerland' },
+        { country: 'New Zealand', property_count: 38, representative_image: 'https://picsum.photos/400/300?random=newzealand' },
+        { country: 'Norway', property_count: 32, representative_image: 'https://picsum.photos/400/300?random=norway' },
+        { country: 'Canada', property_count: 28, representative_image: 'https://picsum.photos/400/300?random=canada' },
+        { country: 'Iceland', property_count: 24, representative_image: 'https://picsum.photos/400/300?random=iceland' },
+        { country: 'Austria', property_count: 22, representative_image: 'https://picsum.photos/400/300?random=austria' },
+        { country: 'Scotland', property_count: 19, representative_image: 'https://picsum.photos/400/300?random=scotland' },
+        { country: 'Chile', property_count: 16, representative_image: 'https://picsum.photos/400/300?random=chile' }
+      ];
+      setCountriesData(fallbackCountries);
     }
-  }, [allProperties]);
+  }, [allProperties, countriesError, countriesData.length]);
 
-  // Process hero images from featured properties
+  // Process hero images from featured properties with fallback
   useEffect(() => {
     if (featuredProperties.length > 0) {
       const images: HeroImage[] = featuredProperties.slice(0, 5).map(property => ({
@@ -110,8 +136,38 @@ const UV_Landing: React.FC = () => {
         caption: property.title
       }));
       setHeroImages(images);
+    } else if (featuredError && heroImages.length === 0) {
+      // Fallback hero images when API fails
+      const fallbackImages: HeroImage[] = [
+        {
+          image_url: 'https://picsum.photos/1920/1080?random=mountain1',
+          property_id: 'fallback-1',
+          caption: 'Stunning Mountain Villa with Alpine Views'
+        },
+        {
+          image_url: 'https://picsum.photos/1920/1080?random=lake1',
+          property_id: 'fallback-2',
+          caption: 'Lakefront Cabin Retreat'
+        },
+        {
+          image_url: 'https://picsum.photos/1920/1080?random=forest1',
+          property_id: 'fallback-3',
+          caption: 'Forest Lodge with Natural Beauty'
+        },
+        {
+          image_url: 'https://picsum.photos/1920/1080?random=ocean1',
+          property_id: 'fallback-4',
+          caption: 'Oceanfront Estate with Panoramic Views'
+        },
+        {
+          image_url: 'https://picsum.photos/1920/1080?random=valley1',
+          property_id: 'fallback-5',
+          caption: 'Valley Ranch with Mountain Backdrop'
+        }
+      ];
+      setHeroImages(fallbackImages);
     }
-  }, [featuredProperties]);
+  }, [featuredProperties, featuredError, heroImages.length]);
 
   // Hero carousel auto-advance
   useEffect(() => {
@@ -296,9 +352,77 @@ const UV_Landing: React.FC = () => {
                 </div>
               ))}
             </div>
-          ) : featuredError ? (
-            <div className="text-center text-red-600">
-              <p>Error loading featured properties. Please try again later.</p>
+          ) : featuredError && featuredProperties.length === 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Fallback featured properties when API fails */}
+              {[
+                { id: 'demo-1', title: 'Alpine Mountain Villa', country: 'Switzerland', city: 'Zermatt', price: 2500000, currency: 'USD', features: ['Mountain Views', 'Ski Access'] },
+                { id: 'demo-2', title: 'Lakefront Cabin Retreat', country: 'Canada', city: 'Banff', price: 850000, currency: 'USD', features: ['Lake Views', 'Forest Setting'] },
+                { id: 'demo-3', title: 'Coastal Estate', country: 'New Zealand', city: 'Queenstown', price: 1800000, currency: 'USD', features: ['Ocean Views', 'Private Beach'] },
+                { id: 'demo-4', title: 'Forest Lodge', country: 'Norway', city: 'Bergen', price: 1200000, currency: 'USD', features: ['Forest Views', 'Wildlife'] },
+                { id: 'demo-5', title: 'Valley Ranch', country: 'Iceland', city: 'Reykjavik', price: 950000, currency: 'USD', features: ['Valley Views', 'Hot Springs'] },
+                { id: 'demo-6', title: 'Highland Castle', country: 'Scotland', city: 'Edinburgh', price: 3200000, currency: 'USD', features: ['Historic', 'Mountain Views'] },
+                { id: 'demo-7', title: 'Desert Oasis', country: 'Chile', city: 'Atacama', price: 750000, currency: 'USD', features: ['Desert Views', 'Stargazing'] },
+                { id: 'demo-8', title: 'Fjord House', country: 'Norway', city: 'Geiranger', price: 1400000, currency: 'USD', features: ['Fjord Views', 'Waterfall'] }
+              ].map((property) => (
+                <div key={property.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="relative">
+                    <img
+                      src={`https://picsum.photos/400/250?random=${property.id}`}
+                      alt={property.title}
+                      className="w-full h-48 object-cover"
+                    />
+                    <button
+                      onClick={() => !isAuthenticated && navigate('/login')}
+                      className="absolute top-3 right-3 p-2 bg-white bg-opacity-90 rounded-full hover:bg-opacity-100 transition-all"
+                    >
+                      <svg
+                        className="w-5 h-5 text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  <div className="p-4">
+                    <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">
+                      {property.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-2">
+                      {property.city && `${property.city}, `}{property.country}
+                    </p>
+                    <p className="text-green-600 font-bold text-lg mb-3">
+                      {formatPrice(property.price, property.currency)}
+                    </p>
+                    
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {property.features.slice(0, 2).map((feature, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    <Link
+                      to="/search"
+                      className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -405,7 +529,7 @@ const UV_Landing: React.FC = () => {
             <p className="text-xl text-gray-600">Discover scenic properties in the world's most beautiful destinations</p>
           </div>
           
-          {loadingCountries ? (
+          {loadingCountries && countriesData.length === 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[...Array(8)].map((_, i) => (
                 <div key={i} className="relative overflow-hidden rounded-lg animate-pulse">

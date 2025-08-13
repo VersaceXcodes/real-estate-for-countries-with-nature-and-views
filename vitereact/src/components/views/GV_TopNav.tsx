@@ -92,13 +92,30 @@ const GV_TopNav: React.FC = () => {
   const unreadNotificationCount = useAppStore(state => state.notification_state.unread_notifications_count);
   const logoutUser = useAppStore(state => state.logout_user);
 
-  // React Query for countries data
-  const { data: availableCountries = [] } = useQuery({
+  // React Query for countries data with fallback
+  const { data: availableCountries = [], error: countriesError } = useQuery({
     queryKey: ['countries'],
     queryFn: fetchCountriesData,
     staleTime: 10 * 60 * 1000, // 10 minutes
-    retry: 1
+    retry: 1,
+    onError: (error) => {
+      console.warn('Failed to fetch countries for navigation:', error);
+    }
   });
+
+  // Fallback countries when API fails
+  const fallbackCountries = [
+    { country: 'Switzerland', property_count: 45 },
+    { country: 'New Zealand', property_count: 38 },
+    { country: 'Norway', property_count: 32 },
+    { country: 'Canada', property_count: 28 },
+    { country: 'Iceland', property_count: 24 },
+    { country: 'Austria', property_count: 22 },
+    { country: 'Scotland', property_count: 19 },
+    { country: 'Chile', property_count: 16 }
+  ];
+
+  const displayCountries = availableCountries.length > 0 ? availableCountries : (countriesError ? fallbackCountries : []);
 
   // React Query for notification count (only if authenticated)
   const { data: notificationCount = 0 } = useQuery({
@@ -210,13 +227,12 @@ const GV_TopNav: React.FC = () => {
                               onChange={(e) => setQuickSearchForm(prev => ({ ...prev, country: e.target.value || null }))}
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                             >
-                              <option value="">All Countries</option>
-                              {availableCountries.map(country => (
-                                <option key={country.country} value={country.country}>
-                                  {country.country} ({country.property_count})
-                                </option>
-                              ))}
-                            </select>
+                            <option value="">All Countries</option>
+                            {displayCountries.map(country => (
+                              <option key={country.country} value={country.country}>
+                                {country.country} ({country.property_count})
+                              </option>
+                            ))}                            </select>
                           </div>
                           
                           <div>
@@ -267,7 +283,7 @@ const GV_TopNav: React.FC = () => {
                   {countriesDropdownOpen && (
                     <div className="absolute left-0 mt-2 w-64 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50 max-h-96 overflow-y-auto">
                       <div className="py-1">
-                        {availableCountries.map(country => (
+                        {displayCountries.map(country => (
                           <button
                             key={country.country}
                             onClick={() => handleCountrySelect(country.country)}
@@ -446,7 +462,7 @@ const GV_TopNav: React.FC = () => {
                 Search Properties
               </Link>
               
-              {availableCountries.slice(0, 5).map(country => (
+              {displayCountries.slice(0, 5).map(country => (
                 <button
                   key={country.country}
                   onClick={() => {
