@@ -73,10 +73,47 @@ if (!existsSync(storageDir)) {
   mkdirSync(storageDir, { recursive: true });
 }
 
+// Global error handler for unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+// Global error handler for uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  process.exit(1);
+});
+
 // Middleware
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.ALLOWED_ORIGINS,
+  'https://123real-estate-for-countries-with-nature-and-views.launchpulse.ai',
+  'http://localhost:5173',
+  'http://localhost:3000'
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.some(allowedOrigin => 
+      origin === allowedOrigin || 
+      origin.includes('launchpulse.ai') ||
+      origin.includes('localhost')
+    )) {
+      return callback(null, true);
+    }
+    
+    const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+    return callback(new Error(msg), false);
+  },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'X-Session-Id'],
+  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+  maxAge: 86400 // 24 hours
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(morgan('combined'));
@@ -2810,14 +2847,42 @@ app.use((error, req, res, next) => {
 API status endpoint
 Returns basic server information
 */
-// app.get('/api', (req, res) => {
-//   res.json({ 
-//     message: 'NatureEstate API Server',
-//     version: '1.0.0',
-//     status: 'running',
-//     timestamp: new Date().toISOString()
-//   });
-// });
+app.get('/api', (req, res) => {
+  res.json({ 
+    message: 'NatureEstate API Server',
+    version: '1.0.0',
+    status: 'running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+/*
+Health check endpoint
+Returns server health status
+*/
+app.get('/health', async (req, res) => {
+  try {
+    // Test database connection
+    const client = await pool.connect();
+    await client.query('SELECT 1');
+    client.release();
+    
+    res.json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      database: 'connected',
+      uptime: process.uptime()
+    });
+  } catch (error) {
+    console.error('Health check failed:', error);
+    res.status(503).json({
+      status: 'unhealthy',
+      timestamp: new Date().toISOString(),
+      database: 'disconnected',
+      error: error.message
+    });
+  }
+});
 
 // Catch-all route for SPA routing (must be last)
 app.get('*', (req, res) => {

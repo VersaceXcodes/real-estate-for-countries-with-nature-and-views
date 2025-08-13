@@ -2,6 +2,39 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import axios from 'axios';
 
+// Configure axios defaults
+axios.defaults.timeout = 30000; // 30 seconds
+axios.defaults.headers.common['Content-Type'] = 'application/json';
+
+// Add request interceptor for better error handling
+axios.interceptors.request.use(
+  (config) => {
+    // Add timestamp to prevent caching issues
+    if (config.method === 'get') {
+      config.params = { ...config.params, _t: Date.now() };
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add response interceptor for better error handling
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.code === 'ECONNABORTED') {
+      error.message = 'Request timeout. Please check your connection and try again.';
+    } else if (error.code === 'ERR_NETWORK') {
+      error.message = 'Network error. Please check your internet connection.';
+    } else if (!error.response) {
+      error.message = 'Unable to connect to server. Please try again later.';
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Types based on API schemas
 export interface User {
   user_id: string;

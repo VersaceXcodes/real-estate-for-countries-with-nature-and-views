@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAppStore } from '@/store/main';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import NetworkStatus from '@/components/NetworkStatus';
 
 // Import global shared views
 import GV_TopNav from '@/components/views/GV_TopNav.tsx';
@@ -25,12 +27,23 @@ import UV_Help from '@/components/views/UV_Help.tsx';
 import UV_Terms from '@/components/views/UV_Terms.tsx';
 import UV_Privacy from '@/components/views/UV_Privacy.tsx';
 
-// Create React Query client
+// Create React Query client with better error handling
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
-      retry: 1,
+      retry: (failureCount, error: any) => {
+        // Don't retry on 4xx errors (client errors)
+        if (error?.response?.status >= 400 && error?.response?.status < 500) {
+          return false;
+        }
+        // Retry up to 2 times for other errors
+        return failureCount < 2;
+      },
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    },
+    mutations: {
+      retry: false, // Don't retry mutations by default
     },
   },
 });
@@ -103,6 +116,9 @@ const AuthRedirect: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Network Status Alert */}
+      <NetworkStatus />
+      
       {/* Global Top Navigation */}
       <GV_TopNav />
       <GV_MobileNav />
@@ -134,10 +150,11 @@ const App: React.FC = () => {
   }
   
   return (
-    <Router>
-      <QueryClientProvider client={queryClient}>
-        <Layout>
-          <Routes>
+    <ErrorBoundary>
+      <Router>
+        <QueryClientProvider client={queryClient}>
+          <Layout>
+            <Routes>
             {/* Public Routes */}
             <Route path="/" element={<UV_Landing />} />
             <Route path="/search" element={<UV_SearchResults />} />
@@ -240,6 +257,7 @@ const App: React.FC = () => {
         </Layout>
       </QueryClientProvider>
     </Router>
+    </ErrorBoundary>
   );
 };
 
