@@ -143,7 +143,7 @@ const App: React.FC = () => {
     // Initialize auth state when app loads to verify stored tokens
     // Only run once on mount
     initializeAuth();
-  }, []); // Empty dependency array to run only once
+  }, [initializeAuth]); // Include initializeAuth in dependencies but it's stable from Zustand
   
   // Show loading spinner during auth initialization
   if (isLoading) {

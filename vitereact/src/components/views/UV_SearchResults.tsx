@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
 import { Property, SearchCriteria } from '@/store/main';
+import ENV_CONFIG from '@/config/env';
 
 // Define interfaces for API responses
 interface PropertySearchResponse {
@@ -145,14 +146,14 @@ const UV_SearchResults: React.FC = () => {
     });
 
     const { data } = await axios.get(
-      `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/properties?${params.toString()}`
+      `${ENV_CONFIG.API_BASE_URL}/properties?${params.toString()}`
     );
     return data;
   };
 
   const saveSearch = async (request: SavedSearchRequest) => {
     const { data } = await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/saved-searches`,
+      `${ENV_CONFIG.API_BASE_URL}/saved-searches`,
       request,
       { headers: { Authorization: `Bearer ${authToken}` } }
     );
@@ -161,7 +162,7 @@ const UV_SearchResults: React.FC = () => {
 
   const saveProperty = async (request: SavedPropertyRequest) => {
     const { data } = await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/saved-properties`,
+      `${ENV_CONFIG.API_BASE_URL}/saved-properties`,
       request,
       { headers: { Authorization: `Bearer ${authToken}` } }
     );
@@ -171,7 +172,7 @@ const UV_SearchResults: React.FC = () => {
   const recordSearch = async (request: SearchHistoryRequest) => {
     try {
       const { data } = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/search-history`,
+        `${ENV_CONFIG.API_BASE_URL}/search-history`,
         request
       );
       return data;
@@ -213,10 +214,10 @@ const UV_SearchResults: React.FC = () => {
     }
   });
 
-  // Update search criteria in global store and record search history
+  // Update search criteria in global store (memoized to prevent infinite loops)
   useEffect(() => {
     updateSearchCriteria(activeCriteria);
-  }, [activeCriteria, updateSearchCriteria]);
+  }, [JSON.stringify(activeCriteria), updateSearchCriteria]);
 
   // Record search history when results change (separate effect to avoid infinite loops)
   useEffect(() => {
@@ -228,14 +229,21 @@ const UV_SearchResults: React.FC = () => {
         return id;
       })();
       
-      recordSearchMutation.mutate({
-        user_id: currentUser?.user_id,
-        session_id: sessionId,
-        ...activeCriteria,
-        results_count: searchResults.total_count,
-      });
+      // Only record if we have meaningful search criteria
+      const hasSearchCriteria = Object.keys(activeCriteria).some(key => 
+        key !== 'sort_by' && key !== 'sort_order' && key !== 'limit' && key !== 'offset' && activeCriteria[key]
+      );
+      
+      if (hasSearchCriteria) {
+        recordSearchMutation.mutate({
+          user_id: currentUser?.user_id,
+          session_id: sessionId,
+          ...activeCriteria,
+          results_count: searchResults.total_count,
+        });
+      }
     }
-  }, [searchResults?.total_count, currentUser?.user_id, recordSearchMutation]);
+  }, [searchResults?.total_count, currentUser?.user_id, JSON.stringify(activeCriteria)]);
 
   // Helper functions
   const updateFilters = (newFilters: Partial<SearchCriteria>) => {
@@ -315,8 +323,8 @@ const UV_SearchResults: React.FC = () => {
     key => key !== 'sort_by' && key !== 'sort_order' && key !== 'limit' && key !== 'offset'
   ).length;
 
-  const currentPage = searchResults?.page || 1;
-  const totalPages = searchResults?.total_pages || 0;
+  const currentPage = searchResults?.page || Math.floor((activeCriteria.offset || 0) / (activeCriteria.limit || 20)) + 1;
+  const totalPages = searchResults?.total_pages || Math.ceil((searchResults?.total_count || 0) / (activeCriteria.limit || 20));
   const totalResults = searchResults?.total_count || 0;
   const properties = searchResults?.properties || [];
 

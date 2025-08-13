@@ -123,7 +123,7 @@ const UV_PropertyDetails: React.FC = () => {
         `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/properties/${propertyId}/view`,
         {
           user_id: currentUser?.user_id || null,
-          session_id: sessionStorage.getItem('session_id') || null,
+          session_id: sessionStorage.getItem('session_id') || `session_${Date.now()}`,
           referrer_url: document.referrer || null,
           ip_address: null,
           user_agent: navigator.userAgent,

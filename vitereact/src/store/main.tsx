@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import axios from 'axios';
+import ENV_CONFIG from '@/config/env';
 
 // Configure axios defaults
 axios.defaults.timeout = 30000; // 30 seconds
@@ -33,9 +34,13 @@ axios.interceptors.response.use(
       error.message = 'Unable to connect to server. Please try again later.';
     } else if (error.response?.status === 401) {
       // Handle unauthorized errors by clearing auth state
-      const store = useAppStore.getState();
-      if (store.authentication_state.auth_token) {
-        store.logout_user();
+      try {
+        const store = useAppStore.getState();
+        if (store.authentication_state.auth_token) {
+          store.logout_user();
+        }
+      } catch (storeError) {
+        console.warn('Error accessing store during auth cleanup:', storeError);
       }
     } else if (error.response?.status >= 500) {
       error.message = 'Server error. Please try again later.';
@@ -267,7 +272,7 @@ export const useAppStore = create<AppState>()(
 
         try {
           const response = await axios.post(
-            `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/auth/login`,
+            `${ENV_CONFIG.API_BASE_URL}/auth/login`,
             { email, password },
             { headers: { 'Content-Type': 'application/json' } }
           );
@@ -309,7 +314,7 @@ export const useAppStore = create<AppState>()(
         if (authentication_state.auth_token) {
           try {
             await axios.post(
-              `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/auth/logout`,
+              `${ENV_CONFIG.API_BASE_URL}/auth/logout`,
               {},
               { headers: { Authorization: `Bearer ${authentication_state.auth_token}` } }
             );
@@ -357,7 +362,7 @@ export const useAppStore = create<AppState>()(
 
         try {
           const response = await axios.post(
-            `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/auth/register`,
+            `${ENV_CONFIG.API_BASE_URL}/auth/register`,
             { email, password, name, user_type },
             { headers: { 'Content-Type': 'application/json' } }
           );
@@ -414,7 +419,7 @@ export const useAppStore = create<AppState>()(
 
         try {
           const response = await axios.get(
-            `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/users/me`,
+            `${ENV_CONFIG.API_BASE_URL}/users/me`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
 
